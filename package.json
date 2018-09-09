@@ -1,0 +1,8 @@
+{
+  "name": "MERN-stack",
+  "version": "1.0.0",
+  "description": "Web application using MERN stack",
+  "main": "index.js",
+  "author": "Cyrus Acharist",
+  "license": "MIT"
+}

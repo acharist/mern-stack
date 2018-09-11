@@ -4,5 +4,12 @@
   "description": "Web application using MERN stack",
   "main": "index.js",
   "author": "Cyrus Acharist",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongoose": "^5.2.14"
+  }
 }

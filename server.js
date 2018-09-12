@@ -19,6 +19,15 @@ mongoose.connection.on("error", (err) => {
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.header('Access-Control-Request-Method', 'GET, POST, PUT, DELETE');
+    }
+    next();
+})
+
 //Use routing
 app.use('/', index);
 

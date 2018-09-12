@@ -1,5 +1,5 @@
 Arguments: 
-  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js start
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add createError
 
 PATH: 
   C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\Cyrus\bin;C:\Program Files\MongoDB\Server\4.0\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\Program Files\Git\cmd;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Yarn\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;C:\Program Files\nodejs;C:\Ruby25-x64\bin;C:\Users\Cyrus\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Microsoft VS Code\bin;C:\Users\Cyrus\AppData\Local\Yarn\bin;C:\Users\Cyrus\AppData\Local\atom\bin;C:\Users\Cyrus\AppData\Local\Microsoft\WindowsApps;C:\Users\Cyrus\AppData\Roaming\npm;C:\Program Files\MongoDB\Server\4.0\bin;C:\Users\Cyrus\AppData\Local\Programs\Microsoft VS Code\bin
@@ -21,6 +21,9 @@ npm manifest:
     "main": "index.js",
     "author": "Cyrus Acharist",
     "license": "MIT",
+    "scripts": {
+      "start": "nodemon server.js"
+    },
     "dependencies": {
       "express": "^4.16.3",
       "mongoose": "^5.2.14"
@@ -459,16 +462,14 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
 Trace: 
-  Error: Command failed.
-  Exit code: 1
-  Command: C:\WINDOWS\system32\cmd.exe
-  Arguments: /d /s /c node server.js
-  Directory: C:\Users\Cyrus\Desktop\MERN Stack
-  Output:
-  
-      at ProcessTermError.MessageError (C:\Program Files (x86)\Yarn\lib\cli.js:186:110)
-      at new ProcessTermError (C:\Program Files (x86)\Yarn\lib\cli.js:226:113)
-      at ChildProcess.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:30281:17)
-      at ChildProcess.emit (events.js:182:13)
-      at maybeClose (internal/child_process.js:961:16)
-      at Process.ChildProcess._handle.onexit (internal/child_process.js:248:5)
+  Error: https://registry.yarnpkg.com/createError: Not found
+      at Request.params.callback [as _callback] (C:\Program Files (x86)\Yarn\lib\cli.js:65019:18)
+      at Request.self.callback (C:\Program Files (x86)\Yarn\lib\cli.js:132430:22)
+      at Request.emit (events.js:182:13)
+      at Request.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:133413:10)
+      at Request.emit (events.js:182:13)
+      at IncomingMessage.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:133333:12)
+      at Object.onceWrapper (events.js:273:13)
+      at IncomingMessage.emit (events.js:187:15)
+      at endReadableNT (_stream_readable.js:1081:12)
+      at process._tickCallback (internal/process/next_tick.js:63:19)

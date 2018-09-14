@@ -2,15 +2,23 @@
   "name": "MERN-stack",
   "version": "1.0.0",
   "description": "Web application using MERN stack",
-  "main": "index.js",
+  "main": "server.js",
   "author": "Cyrus Acharist",
   "license": "MIT",
   "scripts": {
     "start": "nodemon server.js"
   },
   "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "http-errors": "^1.7.1",
-    "mongoose": "^5.2.14"
+    "mongoose": "^5.2.14",
+    "passport": "^0.4.0",
+    "passport-google-oauth20": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "validator": "^10.7.1"
   }
 }

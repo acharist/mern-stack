@@ -1,10 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const config = require('./config/config');
+const bodyParser = require('body-parser');
 const createError = require('http-errors');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+
+const config = require('./config/config');
 
 //Require routing
 const index = require('./routes/index');
+const signup = require('./routes/signup');
 
 //Set up mongodb
 mongoose.connect(config.db('localhost', 27017, 'mernApp'), { useNewUrlParser: true });
@@ -19,6 +25,7 @@ mongoose.connection.on("error", (err) => {
 
 const app = express();
 
+//Handle CORS requests
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     if (req.method === 'OPTIONS') {
@@ -26,22 +33,26 @@ app.use((req, res, next) => {
         res.header('Access-Control-Request-Method', 'GET, POST, PUT, DELETE');
     }
     next();
-})
+});
 
-//Use routing
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+//Routing 
 app.use('/', index);
+app.use('/signup', signup);
 
 //Error handling
 app.use((req, res, next) => {
     next(createError(404));
-})
+});
 
 app.use((err, req, res, next) => {
     res.json({
         status: err.status,
         message: err.message
     })
-})
+});
 
 app.listen(config.app.port, () => {
     console.log(`App running at port ${config.app.port}`);

@@ -3,7 +3,7 @@ module.exports = {
         adress: '127.0.0.1',
         port: process.env.PORT || 3000 
     },
-    db: (adress = 'localhost', port = 27017, collectionName = 'mernApp') => {
+    db: (adress, port, collectionName) => {
         return `mongodb://${adress}:${port}/${collectionName}`;
     }
 }

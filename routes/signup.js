@@ -1,11 +1,12 @@
 const createError = require('http-errors');
 const router = require('express').Router();
 const User = require('../models/User');
+const Article = require('../models/Article');
 const mongoose = require('mongoose');
 
 router.post('/', (req, res, next) => {
     const user = new User({
-        _id: new mongoose.Types.ObjectId,
+        _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         email: req.body.email,
         password: req.body.password
@@ -44,11 +45,30 @@ router.post('/', (req, res, next) => {
             }
         }
 
-        //If ok
-        res.json({
-            status: 200,
-            message: 'User successfully created'
+        const article = new Article({
+            title: 'Статья',
+            content: 'Это простая статья',
+            author: user._id
         });
+
+        article.save((err, article) => {
+            if(err) {
+                next(createError(500));
+            }
+
+            user.articles.push(article);
+            user.save((err) => {
+                if(err) {
+                    return next(createError());
+                }
+            })
+            //If ok
+            res.json({
+                status: 200,
+                message: 'User and article successfully created'
+            });
+        })
+
     })
 });
 

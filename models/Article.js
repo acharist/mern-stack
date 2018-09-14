@@ -7,7 +7,12 @@ const Article = new Schema({
     content: String,
     author: {
         type: Schema.Types.ObjectId,
-        ref: User
+        ref: 'User',
+        required: true
+    },
+    __v: {
+        type: Number,
+        select: false
     }
 });
 

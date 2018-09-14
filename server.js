@@ -9,8 +9,10 @@ const passport = require('passport');
 const config = require('./config/config');
 
 //Require routing
+const article = require('./routes/article');
 const index = require('./routes/index');
 const signup = require('./routes/signup');
+const user = require('./routes/user');
 
 //Set up mongodb
 mongoose.connect(config.db('localhost', 27017, 'mernApp'), { useNewUrlParser: true });
@@ -41,6 +43,8 @@ app.use(bodyParser.json());
 //Routing 
 app.use('/', index);
 app.use('/signup', signup);
+app.use('/user', user);
+app.use('/article', article);
 
 //Error handling
 app.use((req, res, next) => {

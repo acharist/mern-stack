@@ -34,7 +34,7 @@ const User = new Schema({
 
     articles: [{
         type: Schema.Types.ObjectId,
-        ref: Article
+        ref: 'Article'
     }]
 });
 

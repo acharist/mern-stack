@@ -2,16 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const passport = require('passport');
+const queryProcessing = require('./middlewares/queryProcessing');
+const checkAuth = require('./middlewares/checkAuth');
 
 const config = require('./config/config');
 
 //Require routing
-const article = require('./routes/article');
-const index = require('./routes/index');
 const signup = require('./routes/signup');
+const signin = require('./routes/signin');
 const user = require('./routes/user');
 
 //Set up mongodb
@@ -40,11 +38,12 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+app.use(queryProcessing);
+
 //Routing 
-app.use('/', index);
 app.use('/signup', signup);
+app.use('/signin', signin);
 app.use('/user', user);
-app.use('/article', article);
 
 //Error handling
 app.use((req, res, next) => {
@@ -52,10 +51,9 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    res.json({
-        status: err.status,
+    res.status(err.status).json({
         message: err.message
-    })
+    });
 });
 
 app.listen(config.app.port, () => {

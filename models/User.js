@@ -1,9 +1,7 @@
 const validator = require('validator');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Article = require('./Article');
 const bcrypt = require('bcrypt');
-const createError = require('http-errors');
 
 const SALT_WORK_FACTOR = 10;
 
@@ -25,6 +23,8 @@ const User = new Schema({
     },
     email: {
         type: String,
+        lowercase: true,
+        unique: true,
         required: true
     },
     password: {
@@ -35,7 +35,12 @@ const User = new Schema({
     articles: [{
         type: Schema.Types.ObjectId,
         ref: 'Article'
-    }]
+    }],
+
+    __v: {
+        type: Number,
+        select: false
+    }
 });
 
 //Validation

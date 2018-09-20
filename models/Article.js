@@ -3,8 +3,14 @@ const Schema = mongoose.Schema;
 const User = require('./User');
 
 const Article = new Schema({
-    title: String,
-    content: String,
+    title: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',

@@ -33,7 +33,7 @@ const User = new Schema({
     },
 
     articles: [{
-        type: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId, //Id articles which is related to this user
         ref: 'Article'
     }],
 

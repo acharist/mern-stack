@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const User = require('./User');
 
 const Article = new Schema({
     title: {
@@ -11,7 +10,7 @@ const Article = new Schema({
         type: String,
         required: true
     },
-    author: {
+    author: { //Will be user id which created article
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const key = require('../config/key');
 
 router.post('/', (req, res, next) => {
+    console.log(req.body.email)
     User.findOne({ email: req.body.email })
         .exec((err, user) => {
             if (err) {

@@ -31,6 +31,11 @@ const User = new Schema({
         type: String,
         required: true
     },
+    avatarUrl: {
+        type: String,
+        required: true,
+        default: 'http://localhost:5000/uploads/avatar.jpg'
+    },
 
     articles: [{
         type: Schema.Types.ObjectId, //Id articles which is related to this user

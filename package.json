@@ -6,15 +6,20 @@
   "author": "Cyrus Acharist",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js"
+    "client-install": "npm install --prefix client",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "dependencies": {
     "bcrypt": "^3.0.0",
     "body-parser": "^1.18.3",
+    "concurrently": "^4.0.1",
     "express": "^4.16.3",
     "http-errors": "^1.7.1",
     "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.14",
+    "multer": "^1.4.0",
     "validator": "^10.7.1"
   }
 }

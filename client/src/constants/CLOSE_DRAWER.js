@@ -1,0 +1,2 @@
+const CLOSE_DRAWER = 'CLOSE_DRAWER'
+export default CLOSE_DRAWER;

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const queryProcessing = require('./middlewares/queryProcessing');
 const checkAuth = require('./middlewares/checkAuth');
+const path = require('path');
 
 const config = require('./config/config');
 
@@ -38,7 +39,10 @@ app.use((req, res, next) => {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//Allow methods
 app.use(queryProcessing);
+
+app.use('/uploads', checkAuth, express.static(path.join(__dirname, 'uploads')));
 
 //Routing 
 app.use('/signup', signup);

@@ -42,12 +42,12 @@ app.use(bodyParser.json());
 //Allow methods
 app.use(queryProcessing);
 
-app.use('/uploads', checkAuth, express.static(path.join(__dirname, 'uploads')));
+app.use('/api/uploads', checkAuth, express.static(path.join(__dirname, 'uploads')));
 
 //Routing 
-app.use('/signup', signup);
-app.use('/signin', signin);
-app.use('/user', user);
+app.use('/api/signup', signup);
+app.use('/api/signin', signin);
+app.use('/api/user', user);
 
 //Error handling
 app.use((req, res, next) => {

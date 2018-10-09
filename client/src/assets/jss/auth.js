@@ -11,7 +11,7 @@ export const styles = theme => ({
         top: 0,
         backgroundSize: 'cover'
     },
-    signUpOverlay: {
+    authOverlay: {
         ...theme.mixins.gutters(),
         paddingTop: theme.spacing.unit * 2,
         paddingBottom: 30,
@@ -47,5 +47,17 @@ export const styles = theme => ({
         fontWeight: '500',
         fontSize: '1.4rem',
         color: `${Grey['600']}`
+    },
+    loader: {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        zIndex: 3,
+        transform: 'translate(-50%, -50%)',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

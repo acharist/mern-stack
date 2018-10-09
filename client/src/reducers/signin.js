@@ -20,7 +20,6 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                error: false,
                 payload: action.payload
             }
         case POST_USER_DATA_FAILURE:

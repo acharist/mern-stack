@@ -22,17 +22,15 @@ module.exports.signUp = (req, res, next) => {
                     return next(createError(500, err.message));
                 }
             } else {
+
                 if (err.errors.email) {
                     //Check email error message
                     switch (err.errors.email.message) {
-                        case 'Email is incorrect':
-                            next(createError(400, err.errors.email.message));
-                            return;
                         case 'Entity too large or too small':
-                            next(createError(413, err.errors.email.message));
+                            next(createError(413, 'Email length is too large or too small'));
                             return;
                         default:
-                            next(createError(500, err.errors.email.message));
+                            next(createError(400, err.errors.email.message));
                             return;
                     }
                 } else if (err.errors.name) {
@@ -41,16 +39,24 @@ module.exports.signUp = (req, res, next) => {
                             next(createError(413, err.errors.name.message));
                             return;
                         default:
-                            next(createError(500, err.errors.name.message));
+                            next(createError(400, err.errors.name.message));
                             return;
                     }
                 } else if (err.errors.password) {
-                    next(createError(413, err.errors.name.message));
-                    return;
+                    switch (err.errors.password.message) {
+                        case 'Entity too large or too small':
+                            next(createError(413, err.errors.password.message));
+                            return;
+                        default:
+                            next(createError(400, err.errors.password.message));
+                            return;
+                    }
                 } else {
+                    //default
                     next(createError(500, err.errors.name.message));
                     return;
                 }
+
             }
         }
 

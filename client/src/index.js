@@ -32,7 +32,7 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path="/" render={() => ( <Home/> )}/>
                         <Route path="/signup" render={() => ( <Signup/> )}/>
-                        <Route path="/signin" render={() => ( <Signin/> )}/>
+                        {/* <Route path="/signin" render={() => ( <Signin/> )}/> */}
                     </Switch>
                 </div>
             </ConnectedRouter>

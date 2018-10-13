@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const key = require('../config/key');
 
 module.exports.signIn = (req, res, next) => {
+    console.log(req.body)
     User.findOne({ email: req.body.email })
         .exec((err, user) => {
             if (err) {
@@ -22,8 +23,8 @@ module.exports.signIn = (req, res, next) => {
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                    expiresIn: '1h'
-                                });
+                                expiresIn: '15m'
+                            });
 
                             res.json({
                                 message: 'Auth success',
@@ -35,7 +36,7 @@ module.exports.signIn = (req, res, next) => {
                     return next(createError(404, 'Password no sent'))
                 }
             } else {
-                return next(createError(404, 'User not found'));
+                return next(createError(404, 'Email not found'));
             }
         });
 }

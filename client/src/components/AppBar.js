@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,43 +7,50 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Avatar from '@material-ui/core/Avatar'
+// import Avatar from '@material-ui/core/Avatar'
+import { push } from 'connected-react-router';
 
-const styles = {
-    root: {
-        flexGrow: 1,
-    },
-    grow: {
-        flexGrow: 1,
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
-    },
-};
+import { connect } from 'react-redux';
 
-function ButtonAppBar({ classes, openDrawer, closeDrawer }) { //Take properties from passed 'props' argument { classes } = props
-    return (
-        <div className={classes.root}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={openDrawer}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="title" color="inherit" className={classes.grow}>
-                        Webripple
-                    </Typography>
-                    <Button color="inherit">
-                        <Avatar alt="Remy Sharp" src="" className={classes.avatar} />
-                    </Button>
-                </Toolbar>
-            </AppBar>
-        </div>
-    );
+import { styles } from '../assets/jss/appBar';
+
+class ButtonAppBar extends Component {
+    render() {
+        const { classes, openDrawer, title, redirectToSignin, redirectToSignup } = this.props;
+        return (
+            <div className={classes.root}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={openDrawer}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="title" color="inherit" className={classes.grow}>
+                            {title}
+                        </Typography>
+                        {/* <Button color="inherit">
+                            <Avatar alt="Remy Sharp" src="" className={classes.avatar} />
+                        </Button> */}
+                        <Button color="inherit" onClick={redirectToSignin}>Вход</Button>
+                        <Button color="inherit" onClick={redirectToSignup}>Регистрация</Button>
+                    </Toolbar>
+                </AppBar>
+            </div>
+        )
+    }
 }
 
 ButtonAppBar.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonAppBar);
+const mapDispatchToProps = (dispatch) => ({
+    redirectToSignin: () => {
+        dispatch(push('/signin'));
+    },
+    redirectToSignup: () => {
+        dispatch(push('/signup'));
+    }
+});
+
+ButtonAppBar = withStyles(styles)(ButtonAppBar);
+export default connect(null, mapDispatchToProps)(ButtonAppBar);

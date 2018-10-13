@@ -1,35 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-//components
+//Components
 import AppBar from '../components/AppBar';
 import AppDrawer from '../components/AppDrawer';
 
-//actions
+//Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 
 class Home extends Component {
 	constructor(props) {
 		super(props);
-		
-		this.openDrawer = this.openDrawer.bind(this);
-		this.closeDrawer = this.closeDrawer.bind(this);
-	}
-
-	openDrawer() {
-		this.props.openDrawer();
-	}
-	
-	closeDrawer() {
-		this.props.closeDrawer();
 	}
 
 	render() {
+		const { page, openDrawer, closeDrawer } = this.props;
 		return (
 			<div className="Home">
-				<AppBar openDrawer={this.openDrawer}/>
-				<AppDrawer isDrawerOpen={this.props.page.isDrawerOpen} closeDrawer={this.closeDrawer}/>
+				<AppBar title="Webripple" openDrawer={openDrawer}/>
+				<AppDrawer isDrawerOpen={page.isDrawerOpen} closeDrawer={closeDrawer}/>
 			</div>
 		);
 	}

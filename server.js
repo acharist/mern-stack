@@ -11,6 +11,7 @@ const config = require('./config/config');
 //Require routing
 const signup = require('./routes/signup');
 const signin = require('./routes/signin');
+// const refreshToken = require('./routes/refreshToken');
 const user = require('./routes/user');
 
 //Set up mongodb
@@ -45,8 +46,9 @@ app.use(queryProcessing);
 app.use('/api/uploads', checkAuth, express.static(path.join(__dirname, 'uploads')));
 
 //Routing 
-app.use('/api/signup', signup);
-app.use('/api/signin', signin);
+app.use('/api/auth/signup', signup);
+app.use('/api/auth/signin', signin);
+// app.use('/api/auth/refresh-token', refreshToken);
 app.use('/api/user', user);
 
 //Error handling

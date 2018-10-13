@@ -9,14 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ChatIcon from '@material-ui/icons/ChatBubble';
 import PeopleIcon from '@material-ui/icons/People';
 
-const styles = {
-    list: {
-        width: 250,
-    },
-    fullList: {
-        width: 'auto',
-    },
-};
+import { styles } from '../assets/jss/appDrawer';
 
 const TemporaryDrawer = ({ classes, closeDrawer, isDrawerOpen }) => {
     const sideList = (
@@ -46,8 +39,7 @@ const TemporaryDrawer = ({ classes, closeDrawer, isDrawerOpen }) => {
                 </div>
             </Drawer>
         </div>
-    );
-    
+    ); 
 }
 
 TemporaryDrawer.propTypes = {

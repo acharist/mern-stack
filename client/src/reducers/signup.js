@@ -1,7 +1,7 @@
 //constants
-import POST_USER_DATA_REQUEST from '../constants/POST_USER_DATA_REQUEST';
-import POST_USER_DATA_SUCCESS from '../constants/POST_USER_DATA_SUCCESS';
-import POST_USER_DATA_FAILURE from '../constants/POST_USER_DATA_FAILURE';
+import SIGNUP_USER_REQUEST from '../constants/SIGNUP_USER_REQUEST';
+import SIGNUP_USER_SUCCESS from '../constants/SIGNUP_USER_SUCCESS';
+import SIGNUP_USER_FAILURE from '../constants/SIGNUP_USER_FAILURE';
 
 const initialState = {
     loading: false,
@@ -11,19 +11,19 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case POST_USER_DATA_REQUEST:
+        case SIGNUP_USER_REQUEST:
             return {
                 ...state,
                 loading: true
             }
-        case POST_USER_DATA_SUCCESS:
+        case SIGNUP_USER_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 error: false,
                 payload: action.payload
             }
-        case POST_USER_DATA_FAILURE:
+        case SIGNUP_USER_FAILURE:
             return {
                 ...state,
                 error: true,

@@ -6,6 +6,7 @@ const key = require('../config/key');
 
 module.exports.signUp = (req, res, next) => {
     console.log(req.body)
+
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -60,14 +61,32 @@ module.exports.signUp = (req, res, next) => {
             }
         }
 
-        const token = jwt.sign({
+        const accessToken = jwt.sign({
             email: user.email,
             id: user._id
-        }, key);
-
-        res.json({
-            message: 'User successfully created',
-            token
+        }, key, {
+            expiresIn: '15m'
         });
+    
+        const refreshToken = jwt.sign({
+            email: user.email,
+            id: user._id
+        }, key, {
+            expiresIn: '60d'
+        });
+
+        user.refreshToken = refreshToken
+        user.save((err) => {
+            if(err) {
+                return next(createError());
+            }
+
+            res.json({
+                message: 'User successfully created',
+                accessToken,
+                refreshToken
+            });
+        });
+
     });
 }

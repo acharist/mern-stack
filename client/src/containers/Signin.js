@@ -1,92 +1,124 @@
-// import { withStyles } from '@material-ui/core/styles';
-// import React, { Component } from 'react';
-// import Paper from '@material-ui/core/Paper';
-// import TextField from '@material-ui/core/TextField';
-// import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
-// import { connect } from 'redux';
+import { withStyles } from '@material-ui/core/styles';
+import React, { Component } from 'react';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import { connect } from 'react-redux';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import PropTypes from 'prop-types';
 
-// import { styles } from '../assets/jss/auth';
+import { styles } from '../assets/jss/auth';
 
+//Components
+import AppBar from '../components/AppBar';
+import AppDrawer from '../components/AppDrawer';
 
-// class Signin extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             name: '',
-//             email: '',
-//             password: ''
-//         }
+//Actions
+import openDrawer from '../actions/openDrawer';
+import closeDrawer from '../actions/closeDrawer';
+import signin from '../actions/signin';
 
-//         this.handleChangeName = this.handleChangeName.bind(this);
-//         this.handleChangeEmail = this.handleChangeEmail.bind(this);
-//         this.handleChangePassword = this.handleChangePassword.bind(this);
-//     }
-
-//     handleChangeName(event) {
-//         this.setState({
-//             name: event.target.value
-//         });
-//     }
+class Signin extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            email: '',
+            password: ''
+        }
+       
+        this.sendData = this.sendData.bind(this);
+        this.handleChangeEmail = this.handleChangeEmail.bind(this);
+        this.handleChangePassword = this.handleChangePassword.bind(this);
+    }
     
-//     handleChangeEmail(event) {
-//         this.setState({
-//             email: event.target.value
-//         });
-//     }
+    handleChangeEmail(event) {
+        this.setState({
+            email: event.target.value,
+        });
+    }
     
-//     handleChangePassword(event) {
-//         this.setState({
-//             password: event.target.value
-//         });
-//     }
+    handleChangePassword(event) {
+        this.setState({
+            password: event.target.value
+        });
+    }
+
+    sendData() {
+        this.props.authUser(this.state.email, this.state.password);
+        console.log(this.state)
+    }
     
-//     render() {
-//         const { classes } = this.props;
-//         return (
-//             <div>
-//                 <Paper className={classes.authOverlay} elevation={1}>
-//                     <Typography component="h1" className={classes.title}>
-//                         Вход
-//                     </Typography>
-//                     <form className={classes.form}>
-//                         <TextField
-//                             id="standard-email-input"
-//                             label="E-mail"
-//                             className={classes.textField}
-//                             value={this.state.email}
-//                             type="email"
-//                             onChange={this.handleChangeEmail}
-//                             margin="normal"
-//                         />
-//                         <TextField
-//                             id="standard-password-input"
-//                             label="Password"
-//                             className={`${classes.textField} ${classes.bottomGutter}`}
-//                             type="password"
-//                             autoComplete="current-password"
-//                             margin="normal"
-//                         />
-//                         <Button variant="contained" color="primary" className={classes.button}>
-//                             Отправить
-//                         </Button>
-//                     </form>
-//                 </Paper>
-//                 <div className={classes.backgroundOverlay}></div>
-//             </div>
-//         )
-//     }
-// }
+    render() {
+        const { classes, signin, page, closeDrawer, openDrawer } = this.props;
+        const message = signin.payload && signin.payload.data.message;
 
-// const mapStateToProps = (state) => ({
-//     signin: state.signin
-// });
+        return (
+            <div>
+                <div>  
+                    
+                    {signin.loading && <div className={classes.loader}>
+                        <CircularProgress/>
+                    </div>}
 
-// const mapDispatchToProps = (dispatch) => ({
-//     authUser: (name, email, password) => {
-//         dispatch(signin(name, email, password));
-//     }
-// });
+                    <AppBar title="Вход" openDrawer={openDrawer}/>
+				    <AppDrawer isDrawerOpen={page.isDrawerOpen} closeDrawer={closeDrawer}/>
 
-// Signin = withStyles(styles)(Signin);
-// export default connect(mapStateToProps, mapDispatchToProps)(Signin);
+                    <Paper className={classes.authOverlay} elevation={1}>
+                        <form className={classes.form}>
+                            <FormControl required error={message.match(/email/i) ? true : false} className={classes.textField} aria-describedby="component-email">
+                                <InputLabel htmlFor="email">E-mail</InputLabel>
+                                <Input id="email" type="email" value={this.state.email} onChange={this.handleChangeEmail} />
+                                <FormHelperText error={message.match(/email/i) ? true : false} id="component-email">
+                                    {message.match(/email/i) ? message : null}
+                                </FormHelperText>
+                            </FormControl>
+
+                            <FormControl required error={message.match(/password/i) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
+                                <InputLabel htmlFor="password">Пароль</InputLabel>
+                                <Input id="password" type="password" value={this.state.password} onChange={this.handleChangePassword} />
+                                <FormHelperText error={message.match(/password/i) ? true : false} id="component-password">
+                                    {message.match(/password/i) ? message : null}
+                                </FormHelperText>
+                            </FormControl>
+                            
+                            <Button onClick={this.sendData} variant="contained" color="primary" className={classes.button}>
+                                Отправить
+                            </Button>
+                        </form>
+                    </Paper>
+
+                    <div className={classes.backgroundOverlay}></div>
+
+                </div>
+            </div>
+        )
+    }
+}
+
+Signin.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+    page: state.page,
+    signin: state.signin
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    openDrawer: () => {
+		dispatch(openDrawer());
+	},
+	closeDrawer: () => {
+		dispatch(closeDrawer());
+	},
+    authUser: (email, password) => {
+        dispatch(signin(email, password));
+    }
+});
+
+Signin = withStyles(styles)(Signin);
+export default connect(mapStateToProps, mapDispatchToProps)(Signin);

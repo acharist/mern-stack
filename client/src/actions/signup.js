@@ -1,19 +1,26 @@
-import POST_USER_DATA_REQUEST from '../constants/POST_USER_DATA_REQUEST';
-import POST_USER_DATA_SUCCESS from '../constants/POST_USER_DATA_SUCCESS';
-import POST_USER_DATA_FAILURE from '../constants/POST_USER_DATA_FAILURE';
+import SIGNUP_USER_REQUEST from '../constants/SIGNUP_USER_REQUEST';
+import SIGNUP_USER_SUCCESS from '../constants/SIGNUP_USER_SUCCESS';
+import SIGNUP_USER_FAILURE from '../constants/SIGNUP_USER_FAILURE';
 
 import axios from 'axios';
+import saveTokenToStorage from '../utils/saveTokenToStorage';
+import { push } from 'connected-react-router';
 
 export default (name, email, password) => {
     return (dispach) => {
-        dispach({ type: POST_USER_DATA_REQUEST });
+        dispach({ type: SIGNUP_USER_REQUEST });
 
-        axios.post('/api/signup', {
+        axios.post('/api/auth/signup', {
             name,
             email,
             password
         })
-        .then(data => { dispach({ type: POST_USER_DATA_SUCCESS, payload: data }) })
-        .catch(err => { dispach({ type: POST_USER_DATA_FAILURE, payload: err.response }) });
+        .then((data) => {
+            saveTokenToStorage(data.data.token);
+            
+            dispach(push('/'));
+            dispach({ type: SIGNUP_USER_SUCCESS, payload: data });
+        })
+        .catch(err => { dispach({ type: SIGNUP_USER_FAILURE, payload: err.response }) });
     }
 }

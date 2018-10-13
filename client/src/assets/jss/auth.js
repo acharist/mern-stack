@@ -1,4 +1,3 @@
-import Grey from '@material-ui/core/colors/grey';
 import overlay from '../images/overlay.svg';
 
 export const styles = theme => ({
@@ -9,7 +8,8 @@ export const styles = theme => ({
         height: '100%',
         right: 0,
         top: 0,
-        backgroundSize: 'cover'
+        backgroundSize: 'cover',
+        zIndex: -1
     },
     authOverlay: {
         ...theme.mixins.gutters(),
@@ -36,17 +36,6 @@ export const styles = theme => ({
     },
     bottomGutter: {
         marginBottom: 30
-    },
-    title: {
-        width: '100%',
-        textAlign: 'center',
-        position: 'fixed',
-        top: -60,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        fontWeight: '500',
-        fontSize: '1.4rem',
-        color: `${Grey['600']}`
     },
     loader: {
         position: 'fixed',

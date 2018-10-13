@@ -42,6 +42,11 @@ const User = new Schema({
         ref: 'Article'
     }],
 
+    refreshToken: {
+        type: String,
+        require: true
+    },
+
     __v: {
         type: Number,
         select: false

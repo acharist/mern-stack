@@ -1,3 +1,3 @@
-export default (token) => {
-    localStorage.setItem('token', `Bearer ${token}`);
+export default (name, token) => {
+    localStorage.setItem(name, `Bearer ${token}`);
 }

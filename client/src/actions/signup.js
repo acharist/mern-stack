@@ -16,7 +16,8 @@ export default (name, email, password) => {
             password
         })
         .then((data) => {
-            saveTokenToStorage(data.data.token);
+            saveTokenToStorage('access-token', data.data.accessToken);
+            saveTokenToStorage('refresh-token', data.data.refreshToken);
             
             dispach(push('/'));
             dispach({ type: SIGNUP_USER_SUCCESS, payload: data });

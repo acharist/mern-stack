@@ -8,6 +8,7 @@
     "axios": "^0.18.0",
     "connected-react-router": "^4.5.0",
     "history": "^4.7.2",
+    "jwt-decode": "^2.2.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-redux": "^5.0.7",

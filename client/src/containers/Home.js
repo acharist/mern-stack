@@ -9,9 +9,28 @@ import AppDrawer from '../components/AppDrawer';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 
+import { push } from 'connected-react-router';
+
+//Utils
+import sendToken from '../utils/sendToken';
+
 class Home extends Component {
 	constructor(props) {
 		super(props);
+	}
+
+	componentWillMount() {
+		try {
+			//Decode jwt access token and check expires_in
+			// if() {
+
+			// }
+			sendToken('access-token');
+			sendToken('refresh-token');
+		} catch(err) {
+			console.log(err.message)
+			this.props.redirectToSignin();
+		}
 	}
 
 	render() {
@@ -35,6 +54,9 @@ const mapDispatchToProps = (dispatch) => ({
 	},
 	closeDrawer: () => {
 		dispatch(closeDrawer());
+	},
+	redirectToSignin: () => {
+		dispatch(push('/signin'))
 	}
 });
 

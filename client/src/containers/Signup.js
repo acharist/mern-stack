@@ -21,6 +21,9 @@ import signup from '../actions/signup';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 
+//Utils
+import sendToken from '../utils/sendToken';
+
 class Signup extends Component {
     constructor(props) {
         super(props);
@@ -36,6 +39,10 @@ class Signup extends Component {
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
     }
+
+    // componentDidMount() {
+    //     sendToken('refresh-token');
+    // }
 
     handleChangeName(event) {
         this.setState({

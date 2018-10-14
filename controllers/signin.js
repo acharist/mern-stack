@@ -19,16 +19,31 @@ module.exports.signIn = (req, res, next) => {
                             return next(createError(400, 'Password is incorrect'));
                         } else {
                             //Everything ok
-                            const token = jwt.sign({
+                            const accessToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
                             }, key, {
                                 expiresIn: '15m'
                             });
+                        
+                            const refreshToken = jwt.sign({
+                                email: user.email,
+                                id: user._id
+                            }, key, {
+                                expiresIn: '60d'
+                            });
 
-                            res.json({
-                                message: 'Auth success',
-                                token
+                            user.refreshToken = refreshToken
+                            user.save((err) => {
+                                if(err) {
+                                    return next(createError());
+                                }
+
+                                res.json({
+                                    message: 'User successfully created',
+                                    accessToken,
+                                    refreshToken
+                                });
                             });
                         }
                     });

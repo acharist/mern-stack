@@ -19,19 +19,14 @@ class Home extends Component {
 		super(props);
 	}
 
-	componentWillMount() {
-		try {
-			//Decode jwt access token and check expires_in
-			// if() {
-
-			// }
-			sendToken('access-token');
-			sendToken('refresh-token');
-		} catch(err) {
-			console.log(err.message)
-			this.props.redirectToSignin();
-		}
-	}
+	// componentWillMount() {
+	// 	try {
+	// 		sendToken('/api/auth/refresh-token');
+	// 	} catch(err) {
+	// 		console.log(err.message)
+	// 		this.props.redirectToSignin();
+	// 	}
+	// }
 
 	render() {
 		const { page, openDrawer, closeDrawer } = this.props;

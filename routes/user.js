@@ -17,7 +17,7 @@ router.get('/:id/article/articles', user.getUserArticles);
 router.get('/:id/article/:articleId', user.getCurrentUserArticle);
 
 //Route for creating article
-router.post('/:id/article', checkAuth, user.crateArticle);
+router.post('/:id/article', checkAuth, user.createArticle);
 
 //Route for deleting article
 router.delete('/:id/article/:articleID', checkAuth, user.deleteArticle);

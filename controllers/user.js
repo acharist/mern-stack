@@ -105,7 +105,7 @@ module.exports.getCurrentUserArticle = (req, res, next) => {
     }
 }
 
-module.exports.crateArticle = (req, res, next) => {
+module.exports.createArticle = (req, res, next) => {
     const id = req.params.id;
     if (ObjectId.isValid(id)) {
         if (id == req.user.id) {
@@ -132,10 +132,11 @@ module.exports.crateArticle = (req, res, next) => {
                                 if (err) {
                                     return next(createError());
                                 }
-                            });
-                            //If ok
-                            res.status(201).json({
-                                message: 'Article successfully created'
+                                
+                                //If ok
+                                res.status(201).json({
+                                    message: 'Article successfully created'
+                                });
                             });
                         });
                     } else {

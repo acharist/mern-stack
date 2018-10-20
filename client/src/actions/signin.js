@@ -4,7 +4,9 @@ import SIGNIN_USER_FAILURE from '../constants/SIGNIN_USER_FAILURE';
 
 import axios from 'axios';
 import saveTokenToStorage from '../utils/saveTokenToStorage';
-import { push } from 'connected-react-router'
+import { push } from 'connected-react-router';
+
+import enableSession from './enableSession';
 
 export default (email, password) => {
     return (dispach) => {
@@ -17,10 +19,17 @@ export default (email, password) => {
         .then((data) => {
             saveTokenToStorage('access-token', data.data.accessToken);
             saveTokenToStorage('refresh-token', data.data.refreshToken);
+            const { accessToken, refreshToken } = data.data;
              
             dispach(push('/'));
-            dispach({ type: SIGNIN_USER_SUCCESS, payload: data });
+            // dispach({ type: SIGNIN_USER_SUCCESS, payload: { accessToken, refreshToken } });
+
+            dispach({ type: SIGNIN_USER_SUCCESS });
+            dispach(enableSession({ accessToken, refreshToken }));
         })
-        .catch(err => { dispach({ type: SIGNIN_USER_FAILURE, payload: err.response }) });
+        .catch(err => { 
+            const { data, status, statusText } = err.response;
+            dispach({ type: SIGNIN_USER_FAILURE, payload: { formMessage: data.message, status, statusText } });  
+        });
     }
 }

@@ -4,7 +4,7 @@ const key = require('../config/key');
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/User');
 
-module.exports.refreshToken = (req, res, next) => {
+module.exports.refreshTokens = (req, res, next) => {
     const tokenHeader = req.headers['x-authorization'];
     const currentTime = new Date().getTime() / 1000;
     if(tokenHeader) {

@@ -4,9 +4,15 @@ import { combineReducers } from 'redux';
 import page from './page';
 import signup from './signup';
 import signin from './signin';
+import session from './session';
+import auth from './auth'
 
 export default combineReducers({
     page,
-    signup,
-    signin
+    auth: combineReducers({
+        signin,
+        signup,
+        session
+    })
+    // auth
 });

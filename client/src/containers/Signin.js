@@ -49,12 +49,11 @@ class Signin extends Component {
 
     sendData() {
         this.props.authUser(this.state.email, this.state.password);
-        console.log(this.state)
     }
     
     render() {
-        const { classes, signin, page, closeDrawer, openDrawer } = this.props;
-        const message = signin.payload && signin.payload.data.message;
+        const { classes, auth, page, closeDrawer, openDrawer } = this.props;
+        const message = auth.signin.errorData && auth.signin.errorData.formMessage;
 
         return (
             <div>
@@ -105,7 +104,7 @@ Signin.propTypes = {
 
 const mapStateToProps = (state) => ({
     page: state.page,
-    signin: state.signin
+    auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({

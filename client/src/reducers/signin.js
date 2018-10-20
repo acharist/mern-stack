@@ -6,7 +6,7 @@ import SIGNIN_USER_FAILURE from '../constants/SIGNIN_USER_FAILURE';
 const initialState = {
     loading: false,
     error: false,
-    payload: ''
+    errorData: ''
 }
 
 export default (state = initialState, action) => {
@@ -20,14 +20,14 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                payload: action.payload
+                errorData: action.payload
             }
         case SIGNIN_USER_FAILURE:
             return {
                 ...state,
                 error: true,
                 loading: false,
-                payload: action.payload
+                errorData: action.payload
             }
         default:
             return state;

@@ -1,0 +1,2 @@
+const DISABLE_SESSION = 'DISABLE_SESSION';
+export default DISABLE_SESSION;

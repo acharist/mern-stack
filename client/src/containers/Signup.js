@@ -22,7 +22,7 @@ import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 
 //Utils
-import sendToken from '../utils/sendToken';
+// import sendTokens from '../utils/sendToken';
 
 class Signup extends Component {
     constructor(props) {
@@ -39,10 +39,6 @@ class Signup extends Component {
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
     }
-
-    // componentDidMount() {
-    //     sendToken('refresh-token');
-    // }
 
     handleChangeName(event) {
         this.setState({
@@ -67,8 +63,8 @@ class Signup extends Component {
     }
     
     render() {
-        const { classes, page, signup, openDrawer, closeDrawer } = this.props;
-        const message = signup.payload && signup.payload.data.message;
+        const { classes, page, auth, openDrawer, closeDrawer } = this.props;
+        const message = auth.signup.errorData && auth.signup.errorData.formMessage;
 
         return (
             <div>
@@ -117,7 +113,7 @@ class Signup extends Component {
 
                 </div>
             </div>
-        )
+        );
     }
 }
 
@@ -127,7 +123,7 @@ Signup.propTypes = {
 
 const mapStateToProps = (state) => ({
     page: state.page,
-    signup: state.signup
+    auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({

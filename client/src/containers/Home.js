@@ -12,7 +12,7 @@ import closeDrawer from '../actions/closeDrawer';
 import { push } from 'connected-react-router';
 
 //Utils
-import sendToken from '../utils/sendToken';
+// import sendTokens from '../utils/sendTokens';
 
 class Home extends Component {
 	constructor(props) {
@@ -21,7 +21,7 @@ class Home extends Component {
 
 	// componentWillMount() {
 	// 	try {
-	// 		sendToken('/api/auth/refresh-token');
+	// 		sendTokens();
 	// 	} catch(err) {
 	// 		console.log(err.message)
 	// 		this.props.redirectToSignin();

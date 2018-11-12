@@ -5,7 +5,7 @@ const router = require('express').Router();
 const user = require('../controllers/user');
 
 //Route for getting all users
-router.get('/users', user.getAllUsers);
+router.get('/users', checkAuth, user.getAllUsers);
 
 //Route for getting current user
 router.get('/:id', user.getCurrentUser);

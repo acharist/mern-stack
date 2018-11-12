@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const key = require('../config/key');
 
 module.exports.signIn = (req, res, next) => {
-    console.log(req.body)
     User.findOne({ email: req.body.email })
         .exec((err, user) => {
             if (err) {
@@ -23,7 +22,7 @@ module.exports.signIn = (req, res, next) => {
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                expiresIn: '15m'
+                                expiresIn: '10s'
                             });
                         
                             const refreshToken = jwt.sign({

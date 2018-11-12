@@ -25,7 +25,7 @@ export default (email, password) => {
             // dispach({ type: SIGNIN_USER_SUCCESS, payload: { accessToken, refreshToken } });
 
             dispach({ type: SIGNIN_USER_SUCCESS });
-            dispach(enableSession({ accessToken, refreshToken }));
+            // dispach(enableSession({ accessToken, refreshToken }));
         })
         .catch(err => { 
             const { data, status, statusText } = err.response;

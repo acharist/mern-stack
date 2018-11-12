@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 loading: false,
-                errorData: action.payload
+                errorData: ''
             }
         case SIGNIN_USER_FAILURE:
             return {

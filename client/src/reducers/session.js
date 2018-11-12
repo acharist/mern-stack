@@ -1,10 +1,12 @@
 //constants
 import ENABLE_SESSION from '../constants/ENABLE_SESSION';
 import DISABLE_SESSION from '../constants/DISABLE_SESSION';
+import REFRESH_TOKENS from '../constants/REFRESH_TOKENS';
 
 const initialState = {
     isAuthenticated: false,
-    user: ''
+    tokensRefreshed: false,
+    user: '',
 }
 
 export default (state = initialState, action) => {
@@ -19,7 +21,13 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 isAuthenticated: false,
-                user: action.payload
+                tokensRefreshed: false,
+                user: ''
+            }
+        case REFRESH_TOKENS:
+            return {
+                ...state,
+                tokensRefreshed: true,
             }
         default:
             return state;

@@ -29,8 +29,8 @@ ReactDOM.render(
         <MuiThemeProvider theme={theme}>
             <ConnectedRouter history={history}>
                 <div>
-                    <Switch>
-                        <Route exact path="/" render={() => ( <Home/> )}/>
+                    <Switch>           
+                        <Route exact path="/" render={() => (<Home/>)}/>
                         <Route path="/signup" render={() => ( <Signup/> )}/>
                         <Route path="/signin" render={() => ( <Signin/> )}/>
                     </Switch>

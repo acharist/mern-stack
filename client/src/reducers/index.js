@@ -1,16 +1,21 @@
 import { combineReducers } from 'redux';
 
 //Reducers
-import page from './page';
+import appInterface from './appInterface';
 import signup from './signup';
 import signin from './signin';
 import session from './session';
+// --pages
+import homePage from './homePage';
 
 export default combineReducers({
-    page,
+    appInterface,
     auth: combineReducers({
         signin,
         signup,
         session
+    }),
+    pages: combineReducers({
+        homePage
     })
 });

@@ -5,7 +5,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/User');
 
 module.exports.refreshTokens = (req, res, next) => {
-    const tokenHeader = req.headers['x-authorization'];
+    const tokenHeader = req.headers['authorization'];
     const currentTime = new Date().getTime() / 1000;
     if(tokenHeader) {
         const pureToken = tokenHeader.split(' ')[1];
@@ -24,7 +24,7 @@ module.exports.refreshTokens = (req, res, next) => {
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                expiresIn: '15m'
+                                expiresIn: '10s'
                             });
                             const newRefreshToken = jwt.sign({
                                 email: user.email,

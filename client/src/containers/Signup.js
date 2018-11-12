@@ -63,7 +63,7 @@ class Signup extends Component {
     }
     
     render() {
-        const { classes, page, auth, openDrawer, closeDrawer } = this.props;
+        const { classes, appInterface, auth, openDrawer, closeDrawer } = this.props;
         const message = auth.signup.errorData && auth.signup.errorData.formMessage;
 
         return (
@@ -75,7 +75,7 @@ class Signup extends Component {
                     </div>}
 
                     <AppBar title="Регистрация" openDrawer={openDrawer}/>
-                    <AppDrawer isDrawerOpen={page.isDrawerOpen} closeDrawer={closeDrawer}/>
+                    <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
                     <Paper className={classes.authOverlay} elevation={1}>
                         <form className={classes.form}>
@@ -122,7 +122,7 @@ Signup.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    page: state.page,
+    appInterface: state.appInterface,
     auth: state.auth
 });
 

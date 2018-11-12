@@ -8,39 +8,41 @@ import AppDrawer from '../components/AppDrawer';
 //Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
+import enableSession from '../actions/enableSession';
+import disableSession from '../actions/disableSession';
 
 import { push } from 'connected-react-router';
 
-//Utils
-// import sendTokens from '../utils/sendTokens';
+import apiRequest from '../actions/apiRequest';
+import refreshTokens from '../actions/refreshTokens';
+import GET_USERS_REQUEST from '../constants/GET_USERS_REQUEST';
+import GET_USERS_SUCCESS from '../constants/GET_USERS_SUCCESS';
+import GET_USERS_FAILURE from '../constants/GET_USERS_FAILURE';
 
 class Home extends Component {
 	constructor(props) {
-		super(props);
+		super(props);	
 	}
 
-	// componentWillMount() {
-	// 	try {
-	// 		sendTokens();
-	// 	} catch(err) {
-	// 		console.log(err.message)
-	// 		this.props.redirectToSignin();
-	// 	}
-	// }
+	componentWillMount() {
+		this.props.apiRequest('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
+	}
 
 	render() {
-		const { page, openDrawer, closeDrawer } = this.props;
+		const { appInterface, openDrawer, closeDrawer } = this.props;
 		return (
 			<div className="Home">
 				<AppBar title="Webripple" openDrawer={openDrawer}/>
-				<AppDrawer isDrawerOpen={page.isDrawerOpen} closeDrawer={closeDrawer}/>
+				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 			</div>
 		);
 	}
 }
 
 const mapStateToProps = (state, props) => ({
-	page: state.page
+	appInterface: state.appInterface,
+	auth: state.auth,
+	tokensRefreshed: props.tokensRefreshed
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,8 +52,23 @@ const mapDispatchToProps = (dispatch) => ({
 	closeDrawer: () => {
 		dispatch(closeDrawer());
 	},
+	apiRequest: (url, method) => {
+		return (REQEST, SUCCESS, FAILURE) => {
+			dispatch(apiRequest(url, method)(REQEST, SUCCESS, FAILURE));
+		}
+	},
+	enableSession: (tokens) => {
+		dispatch(enableSession(tokens));
+	},
+	disableSession: () => {
+		dispatch(disableSession());
+	},
+	refreshTokens: (refreshToken, url) => {
+		dispatch(refreshTokens(refreshToken, url));
+	},
+
 	redirectToSignin: () => {
-		dispatch(push('/signin'))
+		dispatch(push('/signin'));
 	}
 });
 

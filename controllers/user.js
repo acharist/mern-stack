@@ -4,6 +4,7 @@ const Article = require('../models/Article');
 const createError = require('http-errors');
 
 module.exports.getAllUsers = (req, res, next) => {
+    console.log(req)
     User.find({})
         .select('-password')
         .populate('articles')

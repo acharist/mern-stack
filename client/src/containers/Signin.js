@@ -52,7 +52,7 @@ class Signin extends Component {
     }
     
     render() {
-        const { classes, auth, page, closeDrawer, openDrawer } = this.props;
+        const { classes, auth, appInterface, closeDrawer, openDrawer } = this.props;
         const message = auth.signin.errorData && auth.signin.errorData.formMessage;
 
         return (
@@ -64,7 +64,7 @@ class Signin extends Component {
                     </div>}
 
                     <AppBar title="Вход" openDrawer={openDrawer}/>
-				    <AppDrawer isDrawerOpen={page.isDrawerOpen} closeDrawer={closeDrawer}/>
+				    <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
                     <Paper className={classes.authOverlay} elevation={1}>
                         <form className={classes.form}>
@@ -103,7 +103,7 @@ Signin.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-    page: state.page,
+    appInterface: state.appInterface,
     auth: state.auth
 });
 

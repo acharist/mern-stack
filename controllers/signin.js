@@ -37,9 +37,11 @@ module.exports.signIn = (req, res, next) => {
                                 if(err) {
                                     return next(createError());
                                 }
-
+                                //Get only necessary properties from user
+                                const articles = user.articles.length ? articles : 'empty' 
+                                const { avatarUrl, _id, name, email } = user;
                                 res.json({
-                                    message: 'User successfully created',
+                                    data: { avatarUrl, articles, _id, name, email },
                                     accessToken,
                                     refreshToken
                                 });

@@ -8,7 +8,7 @@ import AppDrawer from '../components/AppDrawer';
 //Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
-import enableSession from '../actions/enableSession';
+import setUserTokens from '../actions/setUserTokens';
 import disableSession from '../actions/disableSession';
 
 import { push } from 'connected-react-router';
@@ -57,8 +57,8 @@ const mapDispatchToProps = (dispatch) => ({
 			dispatch(apiRequest(url, method)(REQEST, SUCCESS, FAILURE));
 		}
 	},
-	enableSession: (tokens) => {
-		dispatch(enableSession(tokens));
+	setUserTokens: (tokens) => {
+		dispatch(setUserTokens(tokens));
 	},
 	disableSession: () => {
 		dispatch(disableSession());

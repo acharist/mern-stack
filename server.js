@@ -43,7 +43,7 @@ app.use(bodyParser.json());
 //Allow methods
 app.use(queryProcessing);
 
-app.use('/api/uploads', checkAuth, express.static(path.join(__dirname, 'uploads')));
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //Routing 
 app.use('/api/auth/signup', signup);

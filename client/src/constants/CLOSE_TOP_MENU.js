@@ -1,0 +1,2 @@
+const CLOSE_TOP_MENU = 'CLOSE_TOP_MENU';
+export default CLOSE_TOP_MENU;

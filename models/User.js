@@ -34,7 +34,7 @@ const User = new Schema({
     avatarUrl: {
         type: String,
         required: true,
-        default: 'http://localhost:5000/uploads/avatar.jpg'
+        default: 'http://localhost:5000/api/uploads/avatar.jpg'
     },
 
     articles: [{

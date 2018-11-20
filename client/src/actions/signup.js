@@ -2,11 +2,15 @@ import SIGNUP_USER_REQUEST from '../constants/SIGNUP_USER_REQUEST';
 import SIGNUP_USER_SUCCESS from '../constants/SIGNUP_USER_SUCCESS';
 import SIGNUP_USER_FAILURE from '../constants/SIGNUP_USER_FAILURE';
 
+import { store } from '../store/store';
+
 import axios from 'axios';
 import saveTokenToStorage from '../utils/saveTokenToStorage';
+import saveStateToStorage from '../utils/saveStateToStorage';
 import { push } from 'connected-react-router';
 
-import enableSession from './enableSession';
+import setUserTokens from './setUserTokens';
+import setUserData from './setUserData';
 
 export default (name, email, password) => {
     return (dispach) => {
@@ -18,15 +22,19 @@ export default (name, email, password) => {
             password
         })
         .then((data) => {
-            saveTokenToStorage('access-token', data.data.accessToken);
-            saveTokenToStorage('refresh-token', data.data.refreshToken);
             const { accessToken, refreshToken } = data.data;
+            
+            saveTokenToStorage('access-token', accessToken);
+            saveTokenToStorage('refresh-token', refreshToken);
 
             dispach(push('/'));
-            // dispach({ type: SIGNUP_USER_SUCCESS, payload: { accessToken, refreshToken } });
 
             dispach({ type: SIGNUP_USER_SUCCESS });
-            dispach(enableSession({ accessToken, refreshToken })); //Enable session after success auth
+            dispach(setUserTokens({ accessToken, refreshToken })); //Enable session after success auth
+            dispach(setUserData(data.data.data));
+
+            //After successfully changing the state, save its local copy (for user session)
+            saveStateToStorage(store.getState());
         })
         .catch(err => {
             const { data, status, statusText } = err.response;

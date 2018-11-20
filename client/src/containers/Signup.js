@@ -79,27 +79,27 @@ class Signup extends Component {
 
                     <Paper className={classes.authOverlay} elevation={1}>
                         <form className={classes.form}>
-                            <FormControl required error={message.match(/name/i) ? true : false} className={classes.textField} aria-describedby="component-name">
+                            <FormControl required error={(message && message.match(/name/i)) ? true : false} className={classes.textField} aria-describedby="component-name">
                                 <InputLabel htmlFor="name">Имя</InputLabel>
                                 <Input id="name" value={this.state.name} onChange={this.handleChangeName} />
-                                <FormHelperText error={message.match(/name/i) ? true : false} id="component-name">
-                                    {message.match(/name/i) ? message : null}
+                                <FormHelperText error={(message && message.match(/name/i)) ? true : false} id="component-name">
+                                    {(message && message.match(/name/i)) ? message : null}
                                 </FormHelperText>
                             </FormControl>
 
-                            <FormControl required error={message.match(/email/i) ? true : false} className={classes.textField} aria-describedby="component-email">
+                            <FormControl required error={(message && message.match(/email/i)) ? true : false} className={classes.textField} aria-describedby="component-email">
                                 <InputLabel htmlFor="email">E-mail</InputLabel>
                                 <Input id="email" type="email" value={this.state.email} onChange={this.handleChangeEmail} />
-                                <FormHelperText error={message.match(/email/i) ? true : false} id="component-email">
-                                    {message.match(/email/i) ? message : null}
+                                <FormHelperText error={(message && message.match(/email/i)) ? true : false} id="component-email">
+                                    {(message && message.match(/email/i)) ? message : null}
                                 </FormHelperText>
                             </FormControl>
 
-                            <FormControl required error={message.match(/password/i) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
+                            <FormControl required error={(message && message.match(/password/i)) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
                                 <InputLabel htmlFor="password">Пароль</InputLabel>
                                 <Input id="password" type="password" value={this.state.password} onChange={this.handleChangePassword} />
-                                <FormHelperText error={message.match(/password/i) ? true : false} id="component-password">
-                                    {message.match(/password/i) ? message : null}
+                                <FormHelperText error={(message && message.match(/password/i)) ? true : false} id="component-password">
+                                    {(message && message.match(/password/i)) ? message : null}
                                 </FormHelperText>
                             </FormControl>
                             

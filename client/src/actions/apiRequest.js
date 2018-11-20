@@ -1,11 +1,11 @@
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import isToken from '../utils/isToken';
-import getToken from '../utils/getToken';
+import getItem from '../utils/getItem';
 
 //Actions
 import { push } from 'connected-react-router';
-import enableSession from './enableSession';
+import setUserTokens from './setUserTokens';
 import disableSession from './disableSession';
 import refreshTokens from './refreshTokens';
 
@@ -23,7 +23,7 @@ const request = (url, method, accessToken) => {
                     dispatch({ type: SUCCESS, payload: res.data });
                 })
                 .catch((err) => {
-                    dispatch({ type: FAILURE, payload: err.data });
+                    dispatch({ type: FAILURE, payload: err.response.data });
                 });
         }
     }
@@ -34,7 +34,7 @@ const requestWithTokensRefresh = (url, method, request) => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
             if(isToken('refresh-token')) {
-                const refreshToken = getToken('refresh-token');
+                const refreshToken = getItem('refresh-token');
                 const decodedRefreshToken = jwtDecode(refreshToken);
                 if(currentTime > decodedRefreshToken.exp) {
                     dispatch(push('/signin'));
@@ -46,9 +46,9 @@ const requestWithTokensRefresh = (url, method, request) => {
                     tokensPromise
                         //If success, make new request on the same url
                         .then(() => {
-                            const accessToken = getToken('access-token');
-                            const refreshToken = getToken('refresh-token');
-                            dispatch(enableSession({ accessToken, refreshToken }));
+                            const accessToken = getItem('access-token');
+                            const refreshToken = getItem('refresh-token');
+                            dispatch(setUserTokens({ accessToken, refreshToken }));
                             request(url, method, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
                         })
                         //Else, tell user, that this is some error
@@ -70,12 +70,12 @@ export default (url, method = 'get') => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
             if(isToken('access-token')) {
-                const accessToken = getToken('access-token');
+                const accessToken = getItem('access-token');
                 const decodedAccessToken = jwtDecode(accessToken);
                 if(currentTime > decodedAccessToken.exp) { // Истек access токен
                     requestWithTokensRefresh(url, method, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
                 } else {
-                    const accessToken = getToken('access-token');
+                    const accessToken = getItem('access-token');
                     request(url, method, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
                 }
             } else {

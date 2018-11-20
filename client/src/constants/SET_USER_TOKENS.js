@@ -1,0 +1,2 @@
+const SET_USER_TOKENS = 'SET_USER_TOKENS';
+export default SET_USER_TOKENS;

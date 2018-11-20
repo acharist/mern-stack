@@ -81,8 +81,11 @@ module.exports.signUp = (req, res, next) => {
                 return next(createError());
             }
 
+            //Get only necessary properties from user
+            const { avatarUrl, articles, _id, name, email } = user;
             res.json({
                 message: 'User successfully created',
+                data: { avatarUrl, articles, _id, name, email },
                 accessToken,
                 refreshToken
             });

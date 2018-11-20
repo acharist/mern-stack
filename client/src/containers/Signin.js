@@ -34,7 +34,7 @@ class Signin extends Component {
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
     }
-    
+
     handleChangeEmail(event) {
         this.setState({
             email: event.target.value,
@@ -113,7 +113,7 @@ const mapDispatchToProps = (dispatch) => ({
 	},
 	closeDrawer: () => {
 		dispatch(closeDrawer());
-	},
+    },
     authUser: (email, password) => {
         dispatch(signin(email, password));
     }

@@ -7,7 +7,7 @@ export default () => {
         localStorage.removeItem('access-token');
         localStorage.removeItem('refresh-token');
         localStorage.removeItem('state');
-        
+    
         dispatch(closeTopMenu());
         dispatch({ type: LOGOUT });
         dispatch(push('/signin'));

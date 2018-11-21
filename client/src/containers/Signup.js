@@ -8,13 +8,14 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import meregeStyles from '../utils/meregeStyles';
 import PropTypes from 'prop-types';
 
 //Components
 import AppBar from '../components/AppBar';
 import AppDrawer from '../components/AppDrawer';
 
-import { styles } from '../assets/jss/auth';
+import { styles } from '../assets/jss/styles';
 
 //Actions
 import signup from '../actions/signup';

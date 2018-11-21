@@ -7,7 +7,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import meregeStyles from '../utils/meregeStyles';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 
@@ -17,8 +16,7 @@ import Settings from '@material-ui/icons/Settings';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 
 //Styles
-import { topMenu } from '../assets/jss/topMenu';
-import { common } from '../assets/jss/common';
+import { styles } from '../assets/jss/styles';
 
 //Actions
 import logOut from '../actions/logOut';
@@ -80,5 +78,5 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-TopMenu = withStyles(meregeStyles([topMenu, common]))(TopMenu);
+TopMenu = withStyles(styles)(TopMenu);
 export default connect(mapStateToProps, mapDispatchToProps)(TopMenu);

@@ -22,19 +22,25 @@ import closeTopMenu from '../actions/closeTopMenu';
 
 import { connect } from 'react-redux';
 
-import { appBar } from '../assets/jss/appBar';
-import { common } from '../assets/jss/common';
+import { styles } from '../assets/jss/styles';
 
 import getLocalState from '../utils/getLocalState';
-import meregeStyles from '../utils/meregeStyles';
-
-const localState = getLocalState();
 
 class ButtonAppBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            anchorEl: null
+            anchorEl: null,
+            localState: getLocalState()
+        }
+        this.checkUserData = this.checkUserData.bind(this);
+    }
+
+    checkUserData(userData = {}) {
+        if(!!Object.keys(userData).length) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -61,25 +67,22 @@ class ButtonAppBar extends Component {
                     this.anchorEl = node;
                   }}>
 
-                <Avatar className={classes.avatar} alt="Remy Sharp" src={!!auth.session.user.data ?
-                    auth.session.user.data.avatarUrl : (localState && localState.auth.session.user.data) ?
-                    localState.auth.session.user.data.avatarUrl : ''} />
+                <Avatar className={classes.avatar} alt="Remy Sharp" src={(this.checkUserData(auth.session.user.data) && auth.session.user.data.avatarUrl) ||
+                    (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.avatarUrl) || ''} />
+
                 </IconButton >
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={!!auth.session.user.data ?
-                                        auth.session.user.data.name : (localState && localState.auth.session.user.data) ?
-                                        localState.auth.session.user.data.name : ''}
+                                <TopMenu userName={(this.checkUserData(auth.session.user.data) && auth.session.user.data.name) ||
+                                (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.name) || ''}
 
-                                        userEmail={!!auth.session.user.data ?
-                                        auth.session.user.data.email : (localState && localState.auth.session.user.data) ?
-                                        localState.auth.session.user.data.email : ''}
+                                        userEmail={(this.checkUserData(auth.session.user.data) && auth.session.user.data.email) ||
+                                        (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.email) || ''}
                                     >
-                                    <Avatar alt="Remy Sharp" src={!!auth.session.user.data ?
-                                        auth.session.user.data.avatarUrl : (localState && localState.auth.session.user.data) ?
-                                        localState.auth.session.user.data.avatarUrl : ''} />
+                                    <Avatar alt="Remy Sharp" src={(this.checkUserData(auth.session.user.data) && auth.session.user.data.avatarUrl) ||
+                                (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.avatarUrl) || ''} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -101,7 +104,7 @@ class ButtonAppBar extends Component {
                         {/* Check if user authenticated in redux state, if not, check this in local state, and if even not there,
                             show authorize buttons ↓↓↓
                         */}
-                        {(auth.session.isAuthenticated) ? menu : (localState && localState.auth.session.isAuthenticated ? menu : authButtons)}
+                        {(auth.session.isAuthenticated) ? menu : (this.state.localState && this.state.localState.auth.session.isAuthenticated ? menu : authButtons)}
                     </Toolbar>
                 </AppBar>
             </div>
@@ -133,5 +136,5 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-ButtonAppBar = withStyles(meregeStyles([common, appBar]))(ButtonAppBar);
+ButtonAppBar = withStyles(styles)(ButtonAppBar);
 export default connect(mapStateToProps, mapDispatchToProps)(ButtonAppBar);

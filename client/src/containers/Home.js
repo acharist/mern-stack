@@ -50,7 +50,7 @@ class Home extends Component {
 		users.forEach((user, index) => {
 			arrOfUsers.push(
 				
-				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={index}>
+				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id}>
 					<CardActionArea className={classNames(classes.w50, classes.h100)}>
 						<CardMedia
 						className={classNames(classes.w100, classes.h100)}
@@ -88,7 +88,7 @@ class Home extends Component {
 		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
 		return (
 			<div className="Home">
-				<AppBar title="Webripple" openDrawer={openDrawer}/>
+				<AppBar title="Главная" openDrawer={openDrawer}/>
 				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
 				{pages.homePage.loading && <div className={classes.loader}>

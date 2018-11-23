@@ -14,6 +14,7 @@ import Signin from './containers/Signin';
 import Signup from './containers/Signup';
 import Home from './containers/Home';
 import User from './containers/User';
+import NotFound from './containers/NotFound';
 
 //Matherial theme config
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -39,6 +40,7 @@ ReactDOM.render(
                         <Route path="/signup" render={() => ( <Signup/> )}/>
                         <Route path="/signin" render={() => ( <Signin/> )}/>
                         <Route path="/:id" render={({ match }) => ( <User match={match}/> )}/>
+                        <Route render={() => ( <NotFound/> )}/>
                     </Switch>
                 </div>
             </ConnectedRouter>

@@ -20,8 +20,6 @@ import Message from '@material-ui/icons/Message';
 //Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
-import setUserTokens from '../actions/setUserTokens';
-import disableSession from '../actions/disableSession';
 import getUserId from '../actions/getUserId';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -31,7 +29,6 @@ import { styles } from '../assets/jss/styles';
 import classNames from 'classnames';
 
 import apiRequest from '../actions/apiRequest';
-import refreshTokens from '../actions/refreshTokens';
 import GET_USERS_REQUEST from '../constants/GET_USERS_REQUEST';
 import GET_USERS_SUCCESS from '../constants/GET_USERS_SUCCESS';
 import GET_USERS_FAILURE from '../constants/GET_USERS_FAILURE';
@@ -109,7 +106,6 @@ const mapStateToProps = (state, props) => ({
 	appInterface: state.appInterface,
 	pages: state.pages,
 	auth: state.auth,
-	tokensRefreshed: props.tokensRefreshed
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -124,22 +120,9 @@ const mapDispatchToProps = (dispatch) => ({
 			dispatch(apiRequest(url, method)(REQEST, SUCCESS, FAILURE));
 		}
 	},
-	setUserTokens: (tokens) => {
-		dispatch(setUserTokens(tokens));
-	},
-	disableSession: () => {
-		dispatch(disableSession());
-	},
-	refreshTokens: (refreshToken, url) => {
-		dispatch(refreshTokens(refreshToken, url));
-	},
 	getUserId: (id) => {
 		console.log(id)
 		dispatch(getUserId(id));
-	},
-
-	redirectToSignin: () => {
-		dispatch(push('/signin'));
 	}
 });
 

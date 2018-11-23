@@ -7,6 +7,7 @@ import signin from './signin';
 import session from './session';
 // --pages
 import homePage from './homePage';
+import userPage from './userPage';
 
 export default combineReducers({
     appInterface,
@@ -16,6 +17,7 @@ export default combineReducers({
         session
     }),
     pages: combineReducers({
-        homePage
+        homePage,
+        userPage
     })
 });

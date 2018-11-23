@@ -22,6 +22,7 @@ import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import setUserTokens from '../actions/setUserTokens';
 import disableSession from '../actions/disableSession';
+import getUserId from '../actions/getUserId';
 
 import { withStyles } from '@material-ui/core/styles';
 import { push } from 'connected-react-router';
@@ -50,8 +51,9 @@ class Home extends Component {
 		users.forEach((user, index) => {
 			arrOfUsers.push(
 				
-				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id}>
-					<CardActionArea className={classNames(classes.w50, classes.h100)}>
+				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id} data-key={user._id}>
+					<CardActionArea onClick={(event) => { this.props.getUserId(event.target.parentElement.parentElement.getAttribute("data-key")) }}
+						className={classNames(classes.w50, classes.h100)}>
 						<CardMedia
 						className={classNames(classes.w100, classes.h100)}
 						image={user.avatarUrl}
@@ -130,6 +132,10 @@ const mapDispatchToProps = (dispatch) => ({
 	},
 	refreshTokens: (refreshToken, url) => {
 		dispatch(refreshTokens(refreshToken, url));
+	},
+	getUserId: (id) => {
+		console.log(id)
+		dispatch(getUserId(id));
 	},
 
 	redirectToSignin: () => {

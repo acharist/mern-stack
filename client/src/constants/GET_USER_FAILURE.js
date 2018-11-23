@@ -1,0 +1,2 @@
+const GET_USER_FAILURE = 'GET_USER_FAILURE';
+export default GET_USER_FAILURE; 

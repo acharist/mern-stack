@@ -1,0 +1,2 @@
+const GET_USER_REQUEST = 'GET_USER_REQUEST';
+export default GET_USER_REQUEST;

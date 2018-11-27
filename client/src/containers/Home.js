@@ -21,6 +21,7 @@ import Message from '@material-ui/icons/Message';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import getUserId from '../actions/getUserId';
+import changeLocation from '../actions/changeLocation';
 
 import { withStyles } from '@material-ui/core/styles';
 import { push } from 'connected-react-router';
@@ -39,8 +40,12 @@ class Home extends Component {
 		this.showUsers = this.showUsers.bind(this);
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		this.props.apiRequest('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
+	}
+
+	changeLocation(id) {
+
 	}
 
 	showUsers(users, classes) {
@@ -49,7 +54,7 @@ class Home extends Component {
 			arrOfUsers.push(
 				
 				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id} data-key={user._id}>
-					<CardActionArea onClick={(event) => { this.props.getUserId(event.target.parentElement.parentElement.getAttribute("data-key")) }}
+					<CardActionArea onClick={(event) => { this.props.changeLocation(event.target.parentElement.parentElement.getAttribute("data-key")) }}
 						className={classNames(classes.w50, classes.h100)}>
 						<CardMedia
 						className={classNames(classes.w100, classes.h100)}
@@ -123,6 +128,9 @@ const mapDispatchToProps = (dispatch) => ({
 	getUserId: (id) => {
 		console.log(id)
 		dispatch(getUserId(id));
+	},
+	changeLocation: (id) => {
+		dispatch(push(`/${id}`));
 	}
 });
 

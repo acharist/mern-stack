@@ -9,7 +9,7 @@ import setUserTokens from './setUserTokens';
 import disableSession from './disableSession';
 import refreshTokens from './refreshTokens';
 
-const currentTime = new Date().getTime() / 1000;
+// const currentTime = new Date().getTime() / 1000;
 
 //Simple 'request' function that makes a request to the specified url
 //For more convenience there is using 'carrying'
@@ -36,7 +36,7 @@ const requestWithTokensRefresh = (url, method, request) => {
             if(isToken('refresh-token')) {
                 const refreshToken = getItem('refresh-token');
                 const decodedRefreshToken = jwtDecode(refreshToken);
-                if(currentTime > decodedRefreshToken.exp) {
+                if(new Date().getTime() / 1000 > decodedRefreshToken.exp) {
                     dispatch(push('/signin'));
                 } else {
                     //Wait for asynchronous processing of tokens
@@ -72,9 +72,12 @@ export default (url, method = 'get') => {
             if(isToken('access-token')) {
                 const accessToken = getItem('access-token');
                 const decodedAccessToken = jwtDecode(accessToken);
-                if(currentTime > decodedAccessToken.exp) { // Истек access токен
+
+                if(new Date().getTime() / 1000 > decodedAccessToken.exp) { // Истек access токен
+                    console.log('With Refresh token')
                     requestWithTokensRefresh(url, method, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
                 } else {
+                    console.log('With Access token')
                     const accessToken = getItem('access-token');
                     request(url, method, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
                 }

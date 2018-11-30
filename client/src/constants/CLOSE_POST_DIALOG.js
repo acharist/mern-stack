@@ -1,0 +1,2 @@
+const CLOSE_POST_DIALOG = 'CLOSE_POST_DIALOG';
+export default CLOSE_POST_DIALOG;

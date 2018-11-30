@@ -31,6 +31,9 @@ export const styles = theme => ({
     flexRowReverse: {
         'flex-direction': 'row-reverse'
     },
+    justifyContentCenter: {
+        'justify-content': 'center'
+    },
     justifyContentEnd: {
         'justify-content': 'flex-end'
     },
@@ -148,6 +151,9 @@ export const styles = theme => ({
         maxWidth: '450px',
         width: '450px'
     },
+    postImg: {
+        maxWidth: '260px',
+    },
     cardMedia: {
         width: '50%'
     },
@@ -178,5 +184,14 @@ export const styles = theme => ({
     },
     userEmail: {
         color: '#8a8a8a'
+    },
+    userPage: {
+        boxSizing: 'border-box'
+    },
+    userName: {
+        marginRight: '5px'
+    },
+    post: {
+        marginBottom: 10
     }
 });

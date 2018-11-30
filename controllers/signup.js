@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const User = require('../models/User');
+const Article = require('../models/Article');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const key = require('../config/key');
@@ -76,18 +77,32 @@ module.exports.signUp = (req, res, next) => {
         });
 
         user.refreshToken = refreshToken
-        user.save((err) => {
-            if(err) {
+
+        //Create default article
+        const article = new Article({
+            title: 'Тестовая статья',
+            content: 'Данная статья была сгенерирована автоматически в целях демонстрации',
+            author: user._id
+        });
+
+        article.save((err, article) => {
+            if (err) {
                 return next(createError());
             }
-
-            //Get only necessary properties from user
-            const { avatarUrl, articles, _id, name, email } = user;
-            res.json({
-                message: 'User successfully created',
-                data: { avatarUrl, articles, _id, name, email },
-                accessToken,
-                refreshToken
+            user.articles.push(article);
+            user.save((err) => {
+                if (err) {
+                    return next(createError());
+                }
+                
+                //Get only necessary properties from user
+                const { avatarUrl, articles, _id, name, email } = user;
+                res.json({
+                    message: 'User successfully created',
+                    data: { avatarUrl, articles, _id, name, email },
+                    accessToken,
+                    refreshToken
+                });
             });
         });
 

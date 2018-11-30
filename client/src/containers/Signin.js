@@ -54,6 +54,7 @@ class Signin extends Component {
     render() {
         const { classes, auth, appInterface, closeDrawer, openDrawer } = this.props;
         const message = auth.signin.errorData && auth.signin.errorData.formMessage;
+        const status = auth.signin.errorData && auth.signin.errorData.status;
 
         return (
             <div>

@@ -1,0 +1,2 @@
+const OPEN_POST_DIALOG = 'OPEN_POST_DIALOG';
+export default OPEN_POST_DIALOG; 

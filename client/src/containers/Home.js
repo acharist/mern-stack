@@ -57,9 +57,9 @@ class Home extends Component {
 					<CardActionArea onClick={(event) => { this.props.changeLocation(event.target.parentElement.parentElement.getAttribute("data-key")) }}
 						className={classNames(classes.w50, classes.h100)}>
 						<CardMedia
-						className={classNames(classes.w100, classes.h100)}
-						image={user.avatarUrl}
-						title="Contemplative Reptile"
+							className={classNames(classes.w100, classes.h100)}
+							image={user.avatarUrl}
+							title="Contemplative Reptile"
 						/>
 					</CardActionArea>
 					<div className={classNames(classes.flex, classes.w50, classes.flexColumn)}>

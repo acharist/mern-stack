@@ -5,11 +5,14 @@ import OPEN_TOP_MENU from '../constants/OPEN_TOP_MENU';
 import CLOSE_TOP_MENU from '../constants/CLOSE_TOP_MENU';
 import OPEN_POST_DIALOG from '../constants/OPEN_POST_DIALOG';
 import CLOSE_POST_DIALOG from '../constants/CLOSE_POST_DIALOG';
+import OPEN_ERROR_SNACKBAR from '../constants/OPEN_ERROR_SNACKBAR';
+import CLOSE_ERROR_SNACKBAR from '../constants/CLOSE_ERROR_SNACKBAR';
 
 const initialState = {
     isDrawerOpen: false,
     isTopMenuOpen: false,
-    isPostDialogOpen: false
+    isPostDialogOpen: false,
+    isErrorSnackbarOpen: false
 }
 
 export default (state = initialState, action) => {
@@ -26,6 +29,10 @@ export default (state = initialState, action) => {
             return { ...state, isPostDialogOpen: action.payload }
         case CLOSE_POST_DIALOG:
             return { ...state, isPostDialogOpen: action.payload }
+        case OPEN_ERROR_SNACKBAR:
+            return { ...state, isErrorSnackbarOpen: action.payload }
+        case CLOSE_ERROR_SNACKBAR:
+            return { ...state, isErrorSnackbarOpen: action.payload }
         default:
             return state;
     }

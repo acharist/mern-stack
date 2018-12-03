@@ -13,6 +13,7 @@ import PropTypes from 'prop-types';
 //Components
 import AppBar from '../components/AppBar';
 import AppDrawer from '../components/AppDrawer';
+import ErrorSnackbar from '../components/ErrorSnackbar';
 
 import { styles } from '../assets/jss/styles';
 
@@ -20,6 +21,7 @@ import { styles } from '../assets/jss/styles';
 import signup from '../actions/signup';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
+import openErrorSnackbar from '../actions/openErrorSnackbar';
 
 //Utils
 // import sendTokens from '../utils/sendToken';
@@ -38,6 +40,13 @@ class Signup extends Component {
         this.handleChangeName = this.handleChangeName.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        let status = this.props.auth.signup.errorData && this.props.auth.signup.errorData.status;
+        const { appInterface, openErrorSnackbar } = this.props;
+
+        (status >= 500 && !appInterface.isErrorSnackbarOpen && prevProps.auth.signup.loading) &&  openErrorSnackbar()
     }
 
     handleChangeName(event) {
@@ -65,11 +74,12 @@ class Signup extends Component {
     render() {
         const { classes, appInterface, auth, openDrawer, closeDrawer } = this.props;
         const message = auth.signup.errorData && auth.signup.errorData.formMessage;
+        const status = auth.signup.errorData && auth.signup.errorData.status;
 
         return (
             <div>
                 <div>  
-                    
+                    <ErrorSnackbar/>
                     {signup.loading && <div className={classes.loader}>
                         <CircularProgress/>
                     </div>}
@@ -79,27 +89,27 @@ class Signup extends Component {
 
                     <Paper className={classes.authOverlay} elevation={1}>
                         <form className={classes.form}>
-                            <FormControl required error={(message && message.match(/name/i)) ? true : false} className={classes.textField} aria-describedby="component-name">
+                            <FormControl required error={(status < 500) && message.match(/name/i) ? true : false} className={classes.textField} aria-describedby="component-name">
                                 <InputLabel htmlFor="name">Имя</InputLabel>
                                 <Input id="name" value={this.state.name} onChange={this.handleChangeName} />
-                                <FormHelperText error={(message && message.match(/name/i)) ? true : false} id="component-name">
-                                    {(message && message.match(/name/i)) ? message : null}
+                                <FormHelperText error={(status < 500) && message.match(/name/i) ? true : false} id="component-name">
+                                    {(status < 500) && message.match(/name/i) ? message : null}
                                 </FormHelperText>
                             </FormControl>
 
-                            <FormControl required error={(message && message.match(/email/i)) ? true : false} className={classes.textField} aria-describedby="component-email">
+                            <FormControl required error={(status < 500) && message.match(/email/i) ? true : false} className={classes.textField} aria-describedby="component-email">
                                 <InputLabel htmlFor="email">E-mail</InputLabel>
                                 <Input id="email" type="email" value={this.state.email} onChange={this.handleChangeEmail} />
-                                <FormHelperText error={(message && message.match(/email/i)) ? true : false} id="component-email">
-                                    {(message && message.match(/email/i)) ? message : null}
+                                <FormHelperText error={(status < 500) && message.match(/email/i) ? true : false} id="component-email">
+                                    {(status < 500) && message.match(/email/i) ? message : null}
                                 </FormHelperText>
                             </FormControl>
 
-                            <FormControl required error={(message && message.match(/password/i)) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
+                            <FormControl required error={(status < 500) && message.match(/password/i) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
                                 <InputLabel htmlFor="password">Пароль</InputLabel>
                                 <Input id="password" type="password" value={this.state.password} onChange={this.handleChangePassword} />
-                                <FormHelperText error={(message && message.match(/password/i)) ? true : false} id="component-password">
-                                    {(message && message.match(/password/i)) ? message : null}
+                                <FormHelperText error={(status < 500) && message.match(/password/i) ? true : false} id="component-password">
+                                    {(status < 500) && message.match(/password/i) ? message : null}
                                 </FormHelperText>
                             </FormControl>
                             
@@ -135,6 +145,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     authUser: (name, email, password) => {
         dispatch(signup(name, email, password));
+    },
+    openErrorSnackbar: () => {
+        dispatch(openErrorSnackbar());
     }
 });
 

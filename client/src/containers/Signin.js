@@ -15,11 +15,13 @@ import { styles } from '../assets/jss/styles';
 //Components
 import AppBar from '../components/AppBar';
 import AppDrawer from '../components/AppDrawer';
+import ErrorSnackbar from '../components/ErrorSnackbar';
 
 //Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import signin from '../actions/signin';
+import openErrorSnackbar from '../actions/openErrorSnackbar';
 
 class Signin extends Component {
     constructor(props) {
@@ -33,6 +35,13 @@ class Signin extends Component {
         this.sendData = this.sendData.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        let status = this.props.auth.signin.errorData && this.props.auth.signin.errorData.status;
+        const { appInterface, openErrorSnackbar } = this.props;
+
+        (status >= 500 && !appInterface.isErrorSnackbarOpen && prevProps.auth.signin.loading) &&  openErrorSnackbar()
     }
 
     handleChangeEmail(event) {
@@ -58,7 +67,9 @@ class Signin extends Component {
 
         return (
             <div>
-                <div>  
+                <div> 
+                    <ErrorSnackbar/>
+                    {/* {(status >= 500 && !appInterface.isErrorSnackbarOpen) &&  openErrorSnackbar()} */}
                     
                     {signin.loading && <div className={classes.loader}>
                         <CircularProgress/>
@@ -69,19 +80,19 @@ class Signin extends Component {
 
                     <Paper className={classes.authOverlay} elevation={1}>
                         <form className={classes.form}>
-                            <FormControl required error={message.match(/email/i) ? true : false} className={classes.textField} aria-describedby="component-email">
+                            <FormControl required error={(status < 500) && message.match(/email/i) ? true : false} className={classes.textField} aria-describedby="component-email">
                                 <InputLabel htmlFor="email">E-mail</InputLabel>
                                 <Input id="email" type="email" value={this.state.email} onChange={this.handleChangeEmail} />
-                                <FormHelperText error={message.match(/email/i) ? true : false} id="component-email">
-                                    {message.match(/email/i) ? message : null}
+                                <FormHelperText error={(status < 500) && message.match(/email/i) ? true : false} id="component-email">
+                                    {(status < 500) && message.match(/email/i) ? message : null}
                                 </FormHelperText>
                             </FormControl>
 
-                            <FormControl required error={message.match(/password/i) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
+                            <FormControl required error={(status < 500) && message.match(/password/i) ? true : false} className={`${classes.textField} ${classes.bottomGutter}`} aria-describedby="component-password">
                                 <InputLabel htmlFor="password">Пароль</InputLabel>
                                 <Input id="password" type="password" value={this.state.password} onChange={this.handleChangePassword} />
-                                <FormHelperText error={message.match(/password/i) ? true : false} id="component-password">
-                                    {message.match(/password/i) ? message : null}
+                                <FormHelperText error={(status < 500) && message.match(/password/i) ? true : false} id="component-password">
+                                    {(status < 500) && message.match(/password/i) ? message : null}
                                 </FormHelperText>
                             </FormControl>
                             
@@ -117,6 +128,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     authUser: (email, password) => {
         dispatch(signin(email, password));
+    },
+    openErrorSnackbar: () => {
+        dispatch(openErrorSnackbar());
     }
 });
 

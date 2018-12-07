@@ -13,12 +13,12 @@ import refreshTokens from './refreshTokens';
 
 //Simple 'request' function that makes a request to the specified url
 //For more convenience there is using 'carrying'
-const request = (url, method, accessToken) => {
+const request = (url, method, params, accessToken) => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
-            dispatch({ type: REQUEST });
+            dispatch({ type: REQUEST, payload: true });
             axios.defaults.headers.common['authorization'] = accessToken;
-            axios[method](url)
+            axios[method](url, params)
                 .then((res) => {
                     dispatch({ type: SUCCESS, payload: res.data });
                 })
@@ -30,7 +30,7 @@ const request = (url, method, accessToken) => {
 }
 
 //More complex 'request' function which makes request for refreshing tokens, and then make usual request for specified url
-const requestWithTokensRefresh = (url, method, request) => {
+const requestWithTokensRefresh = (url, method, params, request) => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
             if(isToken('refresh-token')) {
@@ -49,7 +49,7 @@ const requestWithTokensRefresh = (url, method, request) => {
                             const accessToken = getItem('access-token');
                             const refreshToken = getItem('refresh-token');
                             dispatch(setUserTokens({ accessToken, refreshToken }));
-                            request(url, method, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
+                            request(url, method, params, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
                         })
                         //Else, tell user, that this is some error
                         .catch(() => {
@@ -66,7 +66,7 @@ const requestWithTokensRefresh = (url, method, request) => {
 }
 
 //The main function (action) that determines which request should be executed 
-export default (url, method = 'get') => {
+export default (url, method = 'get', params = {}) => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
             if(isToken('access-token')) {
@@ -74,15 +74,13 @@ export default (url, method = 'get') => {
                 const decodedAccessToken = jwtDecode(accessToken);
 
                 if(new Date().getTime() / 1000 > decodedAccessToken.exp) { // Истек access токен
-                    console.log('With Refresh token')
-                    requestWithTokensRefresh(url, method, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
+                    requestWithTokensRefresh(url, method, params, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
                 } else {
-                    console.log('With Access token')
                     const accessToken = getItem('access-token');
-                    request(url, method, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
+                    request(url, method, params, accessToken)(REQUEST, SUCCESS, FAILURE)(dispatch);
                 }
             } else {
-                requestWithTokensRefresh(url, method, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
+                requestWithTokensRefresh(url, method, params, request)(REQUEST, SUCCESS, FAILURE)(dispatch)
             }
         }
     }

@@ -4,7 +4,6 @@ const Article = require('../models/Article');
 const createError = require('http-errors');
 
 module.exports.getAllUsers = (req, res, next) => {
-    console.log(req)
     User.find({})
         .select('-password')
         .populate('articles')
@@ -109,9 +108,8 @@ module.exports.getCurrentUserArticle = (req, res, next) => {
 module.exports.createArticle = (req, res, next) => {
     const id = req.params.id;
     if (ObjectId.isValid(id)) {
-        if (id == req.user.id) {
+        if (id == req.user.id) { //If it's tokens owner
             User.findById({ _id: id })
-                .populate('articles')
                 .exec((err, user) => {
                     if (user) {
                         if (err) {
@@ -126,7 +124,28 @@ module.exports.createArticle = (req, res, next) => {
 
                         article.save((err, article) => {
                             if (err) {
-                                return next(createError());
+                                if(err.name === 'ValidationError') {
+                                    const sendErr = [];
+                                    for(key in err.errors) {
+                                        let { name, message, value, reason } = err.errors[key];
+                                        switch(key) {
+                                            case 'title':
+                                                sendErr.push({ name, message, value, reason });
+                                                break;
+                                            case 'content':
+                                                sendErr.push({ name, message, value, reason });
+                                                break;
+                                            default:
+                                                break;    
+                                        }
+                                    }
+                                    
+                                     return res.status(400).json({
+                                        data: sendErr
+                                    });
+                                } else {
+                                    return next(createError());
+                                }
                             }
                             user.articles.push(article);
                             user.save((err) => {

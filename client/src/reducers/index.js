@@ -5,9 +5,12 @@ import appInterface from './appInterface';
 import signup from './signup';
 import signin from './signin';
 import session from './session';
+import createPost from './createPost';
+import deletePost from './deletePost';
+
 // --pages
 import homePage from './homePage';
-import userPage from './userPage';
+import user from './user';
 
 export default combineReducers({
     appInterface,
@@ -18,6 +21,12 @@ export default combineReducers({
     }),
     pages: combineReducers({
         homePage,
-        userPage
+        userPage: combineReducers({
+            user,
+            post: combineReducers({
+                create: createPost,
+                delete: deletePost 
+            })
+        })
     })
 });

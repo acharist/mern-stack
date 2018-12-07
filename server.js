@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const queryProcessing = require('./middlewares/queryProcessing');
-const checkAuth = require('./middlewares/checkAuth');
 const path = require('path');
 
 const config = require('./config/config');

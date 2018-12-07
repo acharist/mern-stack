@@ -7,6 +7,9 @@ export const styles = theme => ({
     w100: {
         width: '100%'
     },
+    mh100: {
+        'min-height': '100%'
+    },
     h50: {
         height: '50%'
     },
@@ -192,6 +195,12 @@ export const styles = theme => ({
         marginRight: '5px'
     },
     post: {
-        marginBottom: 10
+        marginBottom: 20,
+        position: 'relative'
+    },
+    fabDelete: {
+        position: 'absolute',
+        bottom: '-10px',
+        right: 20
     }
 });

@@ -1,7 +1,7 @@
-//constants
-import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
-import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
-import GET_USER_FAILURE from '../constants/GET_USER_FAILURE';
+//Constants
+import DELETE_POST_REQUEST from '../constants/DELETE_POST_REQUEST';
+import DELETE_POST_SUCCESS from '../constants/DELETE_POST_SUCCESS';
+import DELETE_POST_FAILURE from '../constants/DELETE_POST_FAILURE';
 
 const initialState = {
     loading: false,
@@ -12,28 +12,26 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case GET_USER_REQUEST:
+        case DELETE_POST_REQUEST:
             return {
                 ...state,
-                loading: true,
-                error: false,
-                errorData: ''
+                loading: true
             }
-        case GET_USER_SUCCESS:
+        case DELETE_POST_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 data: action.payload,
                 error: false,
-                errorData: '',
+                errorData: ''
             }
-        case GET_USER_FAILURE:
-            return {
+        case DELETE_POST_FAILURE:
+            return { 
                 ...state,
                 loading: false,
-                data: '',
                 error: true,
-                errorData: action.payload
+                errorData: action.payload,
+                data: ''
             }
         default:
             return state;

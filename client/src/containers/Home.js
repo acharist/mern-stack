@@ -21,7 +21,6 @@ import Message from '@material-ui/icons/Message';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import getUserId from '../actions/getUserId';
-import changeLocation from '../actions/changeLocation';
 
 import { withStyles } from '@material-ui/core/styles';
 import { push } from 'connected-react-router';
@@ -38,14 +37,28 @@ class Home extends Component {
 	constructor(props) {
 		super(props);	
 		this.showUsers = this.showUsers.bind(this);
+		this.changeLocation = this.changeLocation.bind(this);
 	}
 
 	componentDidMount() {
 		this.props.apiRequest('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
 	}
 
-	changeLocation(id) {
-
+	changeLocation(event) {
+		let counter = 0
+		while(true) {
+			if(event.target.hasAttribute('data-key')) {
+				this.props.changeLocation(event.target.getAttribute("data-key"));
+				break;
+			} else {
+				if(counter > 5) {
+					break
+				} else {
+					counter++;
+				}
+				event.target = event.target.parentNode;
+			}
+		}
 	}
 
 	showUsers(users, classes) {
@@ -53,9 +66,9 @@ class Home extends Component {
 		users.forEach((user, index) => {
 			arrOfUsers.push(
 				
-				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id} data-key={user._id}>
-					<CardActionArea onClick={(event) => { this.props.changeLocation(event.target.parentElement.parentElement.getAttribute("data-key")) }}
-						className={classNames(classes.w50, classes.h100)}>
+				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id}>
+					<CardActionArea data-key={user._id} onClick={this.changeLocation}
+						className={classNames(classes.w50, classes.mh100)}>
 						<CardMedia
 							className={classNames(classes.w100, classes.h100)}
 							image={user.avatarUrl}

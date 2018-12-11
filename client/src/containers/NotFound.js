@@ -14,7 +14,7 @@ import { styles } from '../assets/jss/styles';
 
 class NotFound extends Component {
     render() {
-        const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+        const { appInterface, openDrawer, closeDrawer } = this.props;
         return (
             <div>
                 <AppBar title="404" openDrawer={openDrawer}/>

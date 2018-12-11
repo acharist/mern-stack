@@ -13,10 +13,6 @@ import { styles } from '../assets/jss/styles';
 import { push } from 'connected-react-router';
 
 class AppDrawer extends Component {
-    constructor(props) {
-        super(props);
-    }
-    
     render() {
         const { classes, closeDrawer, isDrawerOpen, redirectToHome } = this.props;
         const sideList = (

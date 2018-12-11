@@ -91,7 +91,7 @@ class Home extends Component {
 							</Button>
 							<Button className={classNames(classes.w100, classes.flex, classes.justifyContentStart, classes.sFont)} size="small" color="primary">
 								<PersonAdd className={classes.xsMargin}/>
-								Добавить в друзья
+								Подписаться
 							</Button>
 						</CardActions>
 					</div>
@@ -143,7 +143,7 @@ const mapDispatchToProps = (dispatch) => ({
 		dispatch(getUserId(id));
 	},
 	changeLocation: (id) => {
-		dispatch(push(`/${id}`));
+		dispatch(push(`/user/${id}`));
 	}
 });
 

@@ -1,2 +1,2 @@
 const CREATE_POST_FAILURE = 'CREATE_POST_FAILURE';
-export default 'CREATE_POST_FAILURE';
+export default CREATE_POST_FAILURE;

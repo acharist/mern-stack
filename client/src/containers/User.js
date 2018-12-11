@@ -74,8 +74,8 @@ class User extends Component {
     }
 
     componentWillMount() {
-        const pathname = this.props; //Get curl path
-        const id = pathname.match.params.id; //Segmented url    
+        const pathname = this.props; //Get url path
+        const id = pathname.match.params.id; //Segmented url
         this.props.apiRequest(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
         //Get user with typed url
         //if user exists, render component. Otherwise, redirect to 404
@@ -184,7 +184,7 @@ class User extends Component {
                             </Typography>
                         </CardContent>
                     </Card>
-                    {this.isPageOwner() && <Fab color="secondary" onClick={() => {setPostId(post._id), openDeletePostDialog()}} aria-label="Edit" className={classes.fabDelete}>
+                    {this.isPageOwner() && <Fab color="secondary" onClick={() => {setPostId(post._id); openDeletePostDialog()}} aria-label="Edit" className={classes.fabDelete}>
                         <DeleteIcon aria-label="Delete"/>
                     </Fab>} {/* Set post ID in redux store */}
                 </div>
@@ -266,7 +266,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
     apiRequest: (url, method, params) => {
 		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(apiRequest(url, method, params)(REQEST, SUCCESS, FAILURE));
+            return dispatch(apiRequest(url, method, params)(REQEST, SUCCESS, FAILURE));
 		}
     },
     openDrawer: () => {
@@ -289,6 +289,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     setPostId: (id) => {
         dispatch(setPostId(id));
+    },
+    redirectTo404: (id) => {
+        dispatch(push(`/${id}`));
     }
 });
 

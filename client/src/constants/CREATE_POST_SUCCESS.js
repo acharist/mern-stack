@@ -1,2 +1,2 @@
 const CREATE_POST_SUCCESS = 'CREATE_POST_SUCCESS';
-export default 'CREATE_POST_SUCCESS';
+export default CREATE_POST_SUCCESS;

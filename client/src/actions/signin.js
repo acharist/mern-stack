@@ -26,14 +26,14 @@ export default (email, password) => {
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
             
-            dispach(push('/'));
-
+            
             dispach({ type: SIGNIN_USER_SUCCESS });
             dispach(setUserTokens({ accessToken, refreshToken }));
             dispach(setUserData(data.data.data));
             
             //After successfully changing the state, save its local copy
             saveStateToStorage(store.getState());
+            dispach(push('/'));
         })
         .catch(err => { 
             const { data, status, statusText } = err.response;

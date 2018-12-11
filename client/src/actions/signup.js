@@ -27,14 +27,14 @@ export default (name, email, password) => {
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
 
-            dispach(push('/'));
-
+            
             dispach({ type: SIGNUP_USER_SUCCESS });
             dispach(setUserTokens({ accessToken, refreshToken })); //Enable session after success auth
             dispach(setUserData(data.data.data));
-
+            
             //After successfully changing the state, save its local copy (for user session)
             saveStateToStorage(store.getState());
+            dispach(push('/'));
         })
         .catch(err => {
             const { data, status, statusText } = err.response;

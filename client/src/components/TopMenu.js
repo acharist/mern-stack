@@ -10,6 +10,8 @@ import MenuList from '@material-ui/core/MenuList';
 import Typography from '@material-ui/core/Typography';
 import classNames from 'classnames';
 
+import getLocalState from '../utils/getLocalState';
+
 //Icons
 import People from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
@@ -20,11 +22,17 @@ import { styles } from '../assets/jss/styles';
 
 //Actions
 import logOut from '../actions/logOut';
+import redirectToSettings from '../actions/redirectToSettings';
+import { push } from 'connected-react-router';
 
 class TopMenu extends Component {
-    render() {
-        const { classes, children, userName, userEmail, logOut } = this.props;
+    state = {
+        localState: getLocalState()
+    }
 
+    render() {
+        const { classes, children, userName, userEmail, logOut, redirectToSettings } = this.props;
+        const userId = this.state.localState && this.state.localState.auth.session.user.data._id;
         return (
             <div>
                 <Paper className={classes.topMenu}>
@@ -52,7 +60,7 @@ class TopMenu extends Component {
                             <ListItemIcon className={classes.icon}>
                                 <Settings />
                             </ListItemIcon>
-                            <ListItemText inset primary="Настройки" />
+                            <ListItemText inset primary="Настройки" onClick={() => redirectToSettings(userId || '')} />
                         </MenuItem>
                         <MenuItem className={classes.menuItem} onClick={logOut}>
                             <ListItemIcon className={classes.icon}>
@@ -73,6 +81,16 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+    redirectToSettings: (id) => {
+        if(id.length) {
+            dispatch(redirectToSettings(id));
+        } else {
+            dispatch(push('/signin'));
+        }
+    },
+    redirectToSignin: () => {
+        dispatch(push('/signin'));
+    },
     logOut: () => {
         dispatch(logOut());
     }

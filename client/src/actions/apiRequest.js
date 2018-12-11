@@ -4,7 +4,7 @@ import isToken from '../utils/isToken';
 import getItem from '../utils/getItem';
 
 //Actions
-import { push } from 'connected-react-router';
+import { push, replace } from 'connected-react-router';
 import setUserTokens from './setUserTokens';
 import disableSession from './disableSession';
 import refreshTokens from './refreshTokens';
@@ -24,6 +24,8 @@ const request = (url, method, params, accessToken) => {
                 })
                 .catch((err) => {
                     dispatch({ type: FAILURE, payload: err.response.data });
+                    //if user id did't match, redirect to 404 with this id
+                    dispatch(replace('/404'))
                 });
         }
     }

@@ -27,21 +27,9 @@ import { styles } from '../assets/jss/styles';
 import getLocalState from '../utils/getLocalState';
 
 class ButtonAppBar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            anchorEl: null,
-            localState: getLocalState()
-        }
-        this.checkUserData = this.checkUserData.bind(this);
-    }
-
-    checkUserData(userData = {}) {
-        if(!!Object.keys(userData).length) {
-            return true;
-        } else {
-            return false;
-        }
+    state = {
+        anchorEl: null,
+        localState: getLocalState()
     }
 
     render() {
@@ -67,22 +55,15 @@ class ButtonAppBar extends Component {
                     this.anchorEl = node;
                   }}>
 
-                <Avatar className={classes.avatar} alt="Remy Sharp" src={(this.checkUserData(auth.session.user.data) && auth.session.user.data.avatarUrl) ||
-                    (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.avatarUrl) || ''} />
+                <Avatar className={classes.avatar} alt="Remy Sharp" src={auth.session.user.data.avatarUrl} />
 
                 </IconButton >
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={(this.checkUserData(auth.session.user.data) && auth.session.user.data.name) ||
-                                (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.name) || ''}
-
-                                        userEmail={(this.checkUserData(auth.session.user.data) && auth.session.user.data.email) ||
-                                        (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.email) || ''}
-                                    >
-                                    <Avatar alt="Remy Sharp" src={(this.checkUserData(auth.session.user.data) && auth.session.user.data.avatarUrl) ||
-                                (this.state.localState && this.checkUserData(this.state.localState.auth.session.user.data) && this.state.localState.auth.session.user.data.avatarUrl) || ''} />
+                                <TopMenu userName={auth.session.user.data.name} userEmail={auth.session.user.data.email}>
+                                    <Avatar alt="Remy Sharp" src={auth.session.user.data.avatarUrl} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -101,10 +82,7 @@ class ButtonAppBar extends Component {
                         <Typography variant="title" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {/* Check if user authenticated in redux state, if not, check this in local state, and if even not there,
-                            show authorize buttons ↓↓↓
-                        */}
-                        {(auth.session.isAuthenticated) ? menu : (this.state.localState && this.state.localState.auth.session.isAuthenticated ? menu : authButtons)}
+                        {this.props.auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>

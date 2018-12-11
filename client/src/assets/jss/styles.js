@@ -183,16 +183,14 @@ export const styles = theme => ({
     },
     userName: {
         fontWeight: 'bold',
-        fontSize: '1.25rem'
+        fontSize: '1.25rem',
+        marginRight: '5px'
     },
     userEmail: {
         color: '#8a8a8a'
     },
     userPage: {
         boxSizing: 'border-box'
-    },
-    userName: {
-        marginRight: '5px'
     },
     post: {
         marginBottom: 20,

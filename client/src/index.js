@@ -14,11 +14,19 @@ import Signin from './containers/Signin';
 import Signup from './containers/Signup';
 import Home from './containers/Home';
 import User from './containers/User';
+import Settings from './containers/Settings';
 import NotFound from './containers/NotFound';
 
 //Matherial theme config
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
+
+import ProtectedRoute from './HOC/ProtectedRoute';
+
+//Decorated routes
+const ProtectedHome = ProtectedRoute(Home);
+const ProtectedUser = ProtectedRoute(User);
+const ProtectedSettings = ProtectedRoute(Settings);
 
 const theme = createMuiTheme({
     palette: {
@@ -26,20 +34,17 @@ const theme = createMuiTheme({
     },
 });
 
-//Current user id ↓↓↓
-const userId = store.getState().pages.homePage.userId;
-console.log(userId)
-
 ReactDOM.render(
     <Provider store={store}>
         <MuiThemeProvider theme={theme}>
             <ConnectedRouter history={history}>
                 <div>
                     <Switch>           
-                        <Route exact path="/" render={() => ( <Home/> )}/>
+                        <Route exact path="/" render={() => ( <ProtectedHome/> )}/>
                         <Route path="/signup" render={() => ( <Signup/> )}/>
                         <Route path="/signin" render={() => ( <Signin/> )}/>
-                        <Route path="/:id" render={({ match }) => ( <User match={match}/> )}/>
+                        <Route path="/user/:id/settings" render={({ match }) => ( <ProtectedSettings match={match}/> )}/>
+                        <Route path="/user/:id" render={({ match }) => ( <ProtectedUser match={match}/> )}/>
                         <Route render={() => ( <NotFound/> )}/>
                     </Switch>
                 </div>

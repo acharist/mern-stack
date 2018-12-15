@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
@@ -98,7 +98,7 @@ class User extends Component {
 
     isPageOwner() {
         if((this.state.localState && this.state.localState.auth.session.user.data._id)
-           === this.props.pages.userPage.user.data.user._id) {
+           === this.props.pages.userPage.user.data._id) {
             return true;
         } else {
             return false;
@@ -106,9 +106,8 @@ class User extends Component {
     }
     
     sendPost(title, content) {
-        const userId = this.props.pages.userPage.user.data.user._id;
-        
-        this.props.apiRequest(`api/user/${userId}/article`, 'post', { title, content })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
+        const userId = this.props.auth.session.user.data._id;
+        this.props.apiRequest(`/api/user/${userId}/article`, 'post', { title, content })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
         this.props.closePostDialog();
         
         this.setState({
@@ -118,9 +117,9 @@ class User extends Component {
     }
     
     deletePost(event) {
-        const userId = this.props.pages.userPage.user.data.user._id;
+        const userId = this.props.pages.userPage.user.data._id;
         const postId = this.props.pages.userPage.user.postId;
-        this.props.apiRequest(`api/user/${userId}/article/${postId}`, 'delete')(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
+        this.props.apiRequest(`/api/user/${userId}/article/${postId}`, 'delete')(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
         this.props.closeDeletePostDialog();
     }
 
@@ -247,11 +246,11 @@ class User extends Component {
                     <CircularProgress/>
                 </div>}
 
-                <AppBar title={pages.userPage.user.data && pages.userPage.user.data.user.name} openDrawer={openDrawer}/>
+                <AppBar title={pages.userPage.user.data && pages.userPage.user.data.name} openDrawer={openDrawer}/>
 				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
                 <DeletePostDialog deletePost={this.deletePost}/>
                 {this.postDialog()}
-                {pages.userPage.user.data && this.async(pages.userPage.user.data.user, classes)}
+                {pages.userPage.user.data && this.async(pages.userPage.user.data, classes)}
             </div>
         )
     }

@@ -19,6 +19,9 @@ export const styles = theme => ({
     textAlignLeft: {
         textAlign: 'left'
     },
+    none: {
+        display: 'none'
+    },
     flex: {
         display: 'flex'
     },
@@ -200,5 +203,16 @@ export const styles = theme => ({
         position: 'absolute',
         bottom: '-10px',
         right: 20
-    }
+    },
+    innerPadding: {
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
+    },
+    settingsTitle: {
+        marginBottom: '20px'
+    },
+    avatarLoadButtons: {
+        display: 'flex'
+    },
 });

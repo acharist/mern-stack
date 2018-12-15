@@ -1,5 +1,19 @@
 const checkAuth = require('../middlewares/checkAuth');
 const router = require('express').Router();
+const multer = require('multer');
+const path = require('path');
+
+//Avatar update
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.user.id + path.extname(file.originalname))
+    }
+});
+
+const upload = multer({ storage: storage })
 
 //user controller
 const user = require('../controllers/user');
@@ -21,5 +35,8 @@ router.post('/:id/article', checkAuth, user.createArticle);
 
 //Route for deleting article
 router.delete('/:id/article/:articleID', checkAuth, user.deleteArticle);
+
+//Route for updating profile picture
+router.post('/:id/settings/avatar', [checkAuth, upload.single('avatar')], user.avatarUpload)
 
 module.exports = router;

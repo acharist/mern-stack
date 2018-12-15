@@ -21,15 +21,11 @@ import openTopMenu from '../actions/openTopMenu';
 import closeTopMenu from '../actions/closeTopMenu';
 
 import { connect } from 'react-redux';
-
 import { styles } from '../assets/jss/styles';
-
-import getLocalState from '../utils/getLocalState';
 
 class ButtonAppBar extends Component {
     state = {
-        anchorEl: null,
-        localState: getLocalState()
+        anchorEl: null
     }
 
     render() {
@@ -55,15 +51,15 @@ class ButtonAppBar extends Component {
                     this.anchorEl = node;
                   }}>
 
-                <Avatar className={classes.avatar} alt="Remy Sharp" src={auth.session.user.data.avatarUrl} />
+                <Avatar className={classes.avatar} alt="Remy Sharp" src={auth.session.user.data.avatarUrl } />
 
-                </IconButton >
+                </IconButton>
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={auth.session.user.data.name} userEmail={auth.session.user.data.email}>
-                                    <Avatar alt="Remy Sharp" src={auth.session.user.data.avatarUrl} />
+                                <TopMenu userName={auth.session.user.data.name} userEmail={auth && auth.session.user.data.email}>
+                                    <Avatar alt="Remy Sharp" src={auth && auth.session.user.data.avatarUrl} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -82,11 +78,11 @@ class ButtonAppBar extends Component {
                         <Typography variant="title" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {this.props.auth.session.isAuthenticated ? menu : authButtons}
+                        {auth && auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>
-        )
+        );
     }
 }
 

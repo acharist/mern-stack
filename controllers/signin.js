@@ -5,6 +5,7 @@ const key = require('../config/key');
 
 module.exports.signIn = (req, res, next) => {
     User.findOne({ email: req.body.email })
+        .populate('articles')
         .exec((err, user) => {
             if (err) {
                 return next(createError());
@@ -38,9 +39,9 @@ module.exports.signIn = (req, res, next) => {
                                     return next(createError());
                                 }
                                 //Get only necessary properties from user
-                                const { avatarUrl, _id, articles, name, email } = user;
+                                const { avatarUrl, _id, articles, name, surname, email, age, city,  } = user;
                                 res.json({
-                                    data: { avatarUrl, articles, _id, name, email },
+                                    data: { avatarUrl, articles, _id, name, email, surname, age, city },
                                     accessToken,
                                     refreshToken
                                 });

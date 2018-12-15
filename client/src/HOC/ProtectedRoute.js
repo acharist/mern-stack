@@ -5,14 +5,24 @@ import React, { Component } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 
+//State
+import { store } from '../store/store';
+
 //Utils
+import saveStateToStorage from '../utils/saveStateToStorage';
 import getLocalState from '../utils/getLocalState';
 import getItem from '../utils/getItem';
 
 //Actions
-import setUserData from '../actions/setUserData';
 import setUserTokens from '../actions/setUserTokens';
+import setUserData from '../actions/setUserData';
+import apiRequest from '../actions/apiRequest';
 import logOut from '../actions/logOut';
+
+//Constants
+import REFRESH_SESSION_DATA_REQUEST from '../constants/REFRESH_SESSION_DATA_REQUEST';
+import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCCESS';
+import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
 
 export default function (WrappedComponent) {
     class checkLocalStateHOC extends Component {
@@ -25,6 +35,17 @@ export default function (WrappedComponent) {
             this._checkAndValidateTokens = this._checkAndValidateTokens.bind(this);
         }
 
+        componentWillMount() {
+            this._checkAndRedirect();
+            //Set new user data every time before render component
+            if(this._check()) {
+                const id = getLocalState().auth.session.user.data._id;
+                this.props.apiRequest(`/api/user/${id}`, 'get', null, null, 
+                    (state) => { saveStateToStorage(store.getState()) }
+                )(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE)
+            }
+        }
+        
         componentDidMount() {
             this._checkAndRedirect();
         }
@@ -46,15 +67,14 @@ export default function (WrappedComponent) {
             try {
                 const accessToken = getItem('access-token');
                 const refreshToken = getItem('refresh-token');
-
                 //This is simple method of checking user local tokens!!!
                 //Modification can goes here 
                 const splittedAccessToken = accessToken.split(' ');
                 const splittedRefreshToken = refreshToken.split(' ');
 
-                if(splittedAccessToken[1].length < 200 || splittedAccessToken[1].length > 200) {
+                if(splittedAccessToken[1].length < 190 || splittedAccessToken[1].length > 220) {
                     return false;
-                } else if(splittedRefreshToken[1].length < 200 || splittedRefreshToken[1].length > 200) {
+                } else if(splittedRefreshToken[1].length < 190 || splittedRefreshToken[1].length > 220) {
                     return false;
                 } else {
                     return true;
@@ -76,9 +96,9 @@ export default function (WrappedComponent) {
             } else {
                 const accessToken = getItem('access-token');
                 const refreshToken = getItem('refresh-token');
-                
                 //Set state to authenticated and then show top menu
-                this.props.setUserData(getLocalState().auth.session.user.data); //While the functionality is not ready, put the data from the local storage here.
+                // this.props.setUserData(getLocalState().auth.session.user.data); //While the functionality is not ready, put the data from the local storage here.
+                
                 this.props.setUserTokens({ accessToken, refreshToken });
             }
         }
@@ -89,6 +109,11 @@ export default function (WrappedComponent) {
     }
 
     const mapDispatchToProps = (dispatch) => ({
+        apiRequest: (url, method, params, headers, callback) => {
+            return (REQEST, SUCCESS, FAILURE) => {
+                dispatch(apiRequest(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
+            }
+        },
         setUserData: (data) => {
             dispatch(setUserData(data));
         },

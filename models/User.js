@@ -16,10 +16,12 @@ const User = new Schema({
         type: String,
     },
     age: {
-        type: Number
+        type: String,
+        default: ''
     },
-    phone: {
-        type: String
+    city: {
+        type: String,
+        default: ''
     },
     email: {
         type: String,

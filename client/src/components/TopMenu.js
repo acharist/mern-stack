@@ -32,7 +32,7 @@ class TopMenu extends Component {
 
     render() {
         const { classes, children, userName, userEmail, logOut, redirectToSettings } = this.props;
-        const userId = this.state.localState && this.state.localState.auth.session.user.data._id;
+
         return (
             <div>
                 <Paper className={classes.topMenu}>
@@ -60,7 +60,7 @@ class TopMenu extends Component {
                             <ListItemIcon className={classes.icon}>
                                 <Settings />
                             </ListItemIcon>
-                            <ListItemText inset primary="Настройки" onClick={() => redirectToSettings(userId || '')} />
+                            <ListItemText inset primary="Настройки" onClick={() => redirectToSettings(this.props.auth.session.user.data._id)} />
                         </MenuItem>
                         <MenuItem className={classes.menuItem} onClick={logOut}>
                             <ListItemIcon className={classes.icon}>

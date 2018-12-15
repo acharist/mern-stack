@@ -10,7 +10,6 @@ export default (data) => {
             name: getItem('name'),
             email: getItem('email')
         }
-        console.log(data)
         dispatch({
             type: SET_USER_DATA,
             payload: data || cachedData

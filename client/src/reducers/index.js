@@ -7,8 +7,8 @@ import signin from './signin';
 import session from './session';
 import createPost from './createPost';
 import deletePost from './deletePost';
-
-// --pages
+import avatar from './avatar';
+import userData from './userData';
 import homePage from './homePage';
 import user from './user';
 
@@ -27,6 +27,10 @@ export default combineReducers({
                 create: createPost,
                 delete: deletePost 
             })
+        }),
+        settingsPage: combineReducers({
+            avatar,
+            data: userData
         })
     })
 });

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -15,7 +14,7 @@ import closeErrorSnackbar from '../actions/closeErrorSnackbar';
 
 class ErrorSnackbar extends Component {
     render() {
-        const { appInterface, openErrorSnackbar, closeErrorSnackbar, classes } = this.props;
+        const { appInterface, closeErrorSnackbar, classes } = this.props;
         return (
             <div>
                 <Snackbar

@@ -27,7 +27,7 @@ export default (name, email, password) => {
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
 
-            
+            console.log(data)
             dispach({ type: SIGNUP_USER_SUCCESS });
             dispach(setUserTokens({ accessToken, refreshToken })); //Enable session after success auth
             dispach(setUserData(data.data.data));

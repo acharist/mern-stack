@@ -6,8 +6,6 @@ const jwt = require('jsonwebtoken');
 const key = require('../config/key');
 
 module.exports.signUp = (req, res, next) => {
-    console.log(req.body)
-
     const user = new User({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -96,10 +94,10 @@ module.exports.signUp = (req, res, next) => {
                 }
                 
                 //Get only necessary properties from user
-                const { avatarUrl, articles, _id, name, email } = user;
+                const { avatarUrl, _id, articles, name, surname, email, age, city,  } = user;
                 res.json({
                     message: 'User successfully created',
-                    data: { avatarUrl, articles, _id, name, email },
+                    data: { avatarUrl, articles, _id, name, email, surname, age, city },
                     accessToken,
                     refreshToken
                 });

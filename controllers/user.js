@@ -31,8 +31,9 @@ module.exports.getCurrentUser = (req, res, next) => {
                         return next(createError());
                     }
 
+                    const { avatarUrl, _id, articles, name, surname, email, age, city,  } = user;
                     res.json({
-                        user
+                        data: { avatarUrl, articles, _id, name, email, surname, age, city },
                     })
                 } else {
                     return next(createError(404, 'No such user'));
@@ -111,11 +112,11 @@ module.exports.createArticle = (req, res, next) => {
         if (id == req.user.id) { //If it's tokens owner
             User.findById({ _id: id })
                 .exec((err, user) => {
-                    if (user) {
-                        if (err) {
-                            return next(createError());
-                        }
+                    if (err) {
+                        return next(createError());
+                    }
 
+                    if (user) {
                         const article = new Article({
                             title: req.body.title,
                             content: req.body.content,
@@ -199,6 +200,45 @@ module.exports.deleteArticle = (req, res, next) => {
                         return next(createError(404, 'No such user'));
                     }
                 });
+        } else {
+            return next(createError(401));
+        }
+    } else {
+        return next(createError(400, 'ID is incorrect'));
+    }
+}
+
+module.exports.avatarUpload = (req, res, next) => {
+    const id = req.params.id;
+    const maxFileSize = 1024 * 1024 * 2; 
+
+    if(ObjectId.isValid(id)) {
+        if(id === req.user.id) {
+            if(req.file) {
+                if(req.file.size > maxFileSize) {
+                    return next(createError(400, 'File size is too big'))
+                } else {
+                    User.findById({ _id: id })
+                        .exec((err, user) => {
+                                if(err) {
+                                    return next(createError(500));
+                                }
+
+                                user.avatarUrl = `http://localhost:5000/api/uploads/${id}.jpg`;
+                                user.save((err) => {
+                                    if(err) {
+                                        return next(createError(500));
+                                    }
+                
+                                    res.status(200).json({
+                                        message: 'Avatar successfully uploaded'
+                                    });
+                                })
+                            })
+                }
+            } else {
+                return next(createError(400, 'Request object doesn\'t contain any file '))
+            }
         } else {
             return next(createError(401));
         }

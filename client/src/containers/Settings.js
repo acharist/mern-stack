@@ -7,12 +7,19 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
 
 import AppBar from '../components/AppBar';
 import AppDrawer from '../components/AppDrawer';
 
 //Constants
+import UPDATE_INFO_REQUEST from '../constants/UPDATE_INFO_REQUEST';
+import UPDATE_INFO_SUCCESS from '../constants/UPDATE_INFO_SUCCESS';
+import UPDATE_INFO_FAILURE from '../constants/UPDATE_INFO_FAILURE';
 import UPDATE_AVATAR_REQUEST from '../constants/UPDATE_AVATAR_REQUEST';
 import UPDATE_AVATAR_SUCCESS from '../constants/UPDATE_AVATAR_SUCCESS';
 import UPDATE_AVATAR_FAILURE from '../constants/UPDATE_AVATAR_FAILURE';
@@ -21,9 +28,10 @@ import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCC
 import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
 
 //Actions
-import openDrawer from '../actions/openDrawer';
+import refreshTokens from '../actions/refreshTokens';
 import closeDrawer from '../actions/closeDrawer';
-import apiRequest from '../actions/apiRequest';
+import openDrawer from '../actions/openDrawer';
+import request from '../actions/request';
 
 //Icons
 import CloudUpload from '@material-ui/icons/CloudUpload';
@@ -31,21 +39,34 @@ import CloudUpload from '@material-ui/icons/CloudUpload';
 //Styles
 import { styles } from '../assets/jss/styles';
 
+//Store
+import { store } from '../store/store';
+
+import saveStateToStorage from '../utils/saveStateToStorage';
+import isExpiredToken from '../utils/isExpiredToken';
+import getLocalState from '../utils/getLocalState';
+import getItem from '../utils/getItem';
 import classNames from 'classnames';
 
 class Settings extends Component {
     constructor(props) {
         super(props);
+        this.localState = getLocalState();
         this.state = {
-            name: this.props.auth.session.user.data.name, 
-            email: this.props.auth.session.user.data.email,
+            name: this.props.auth.session.user.data.name || '', 
+            email: this.props.auth.session.user.data.email || '',
             password: '',
-            age: this.props.auth.session.user.data.age,
-            city: this.props.auth.session.user.data.city
+            age: this.props.auth.session.user.data.age || '',
+            city: this.props.auth.session.user.data.city || ''
         }
 
         this.handleInfoChange = this.handleInfoChange.bind(this);
         this.sendAvatar = this.sendAvatar.bind(this);
+        this.sendInfo = this.sendInfo.bind(this);
+
+        this.accessToken = getItem('access-token');
+        this.refreshToken = getItem('refresh-token');
+        this._userId = this.localState.auth.session.user.data._id;
 
         this.avatarInput = React.createRef();
     }
@@ -57,22 +78,65 @@ class Settings extends Component {
     }
 
     sendAvatar() {
-        const id = this.props.auth.session.user.data._id;
         const headers = { 'Content-Type': 'multipart/form-data' }
         const formData = new FormData();
         formData.append('avatar', this.avatarInput.current.files[0]);
-        this.props.apiRequest(`/api/user/${id}/settings/avatar`, 'post', formData, { headers },
-            this.props.apiRequest(`/api/user/${id}`, 'get', null, null, 
-                () => { window.location.reload() }
-            )(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE)
-        )(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        if(isExpiredToken(this.accessToken)) {
+            this.props.refreshTokens(this.refreshToken, () => {
+                this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers }, () => {
+                    this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
+						saveStateToStorage(store.getState());
+						window.location.reload();
+					})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+                })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+            });
+        } else {
+            this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers }, () => {
+                this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
+					saveStateToStorage(store.getState());
+					window.location.reload();
+				})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+            })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        }
+    }
+
+    sendInfo() {
+        const data = {
+            name: this.state.name || '', 
+            email: this.state.email || '',
+            password: '' || '',
+            age: this.state.age || '',
+            city: this.state.city || ''
+		}
+		
+		if(isExpiredToken(this.accessToken)) {
+            this.props.refreshTokens(this.refreshToken, () => {
+                this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data, null, () => {
+					this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
+						saveStateToStorage(store.getState());
+						window.location.reload();
+					})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+				})(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE)
+            });
+        } else {
+            this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data, null, () => {
+				this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
+					saveStateToStorage(store.getState());
+					window.location.reload();
+				})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+			})(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE)
+        }
     }
 
     render() {
-        const { classes, appInterface, openDrawer, closeDrawer, auth } = this.props;
-
+        const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
+        const message = pages.settingsPage.data.errorData && pages.settingsPage.data.errorData.message;
         return (
             <div>
+                {pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading && <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>}
+
                 <AppBar title="Настройки" openDrawer={openDrawer}/>
                 <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
@@ -111,49 +175,50 @@ class Settings extends Component {
                                     Персональная информация
                                 </Typography>
                                 <form style={{ marginBottom: 40 }}>
-                                    <TextField
-                                        id="standard-name"
-                                        label="Имя"
-                                        className={classNames(classes.personalInfoTextField, classes.w100)}
-                                        value={this.state.name}
-                                        onChange={(event) => { this.handleInfoChange(event)('name') }}
-                                        margin="normal"
-                                    />
-                                    <TextField
-                                        id="standard-name"
-                                        label="E-mail"
-                                        className={classNames(classes.personalInfoTextField, classes.w100)}
-                                        value={this.state.email}
-                                        onChange={(event) => { this.handleInfoChange(event)('email') }}
-                                        margin="normal"
-                                    />
-                                    <TextField
-                                        id="standard-name"
-                                        label="Пароль"
-                                        className={classNames(classes.personalInfoTextField, classes.w100)}
-                                        value={this.state.password}
-                                        onChange={(event) => { this.handleInfoChange(event)('password') }}
-                                        margin="normal"
-                                    />
-                                    <TextField
-                                        id="standard-name"
-                                        label="Возраст"
-                                        className={classNames(classes.personalInfoTextField, classes.w100)}
-                                        value={this.state.age}
-                                        onChange={(event) => { this.handleInfoChange(event)('age') }}
-                                        margin="normal"
-                                    />
-                                    <TextField
-                                        id="standard-name"
-                                        label="Город"
-                                        className={classNames(classes.personalInfoTextField, classes.w100)}
-                                        value={this.state.city}
-                                        onChange={(event) => { this.handleInfoChange(event)('city') }}
-                                        margin="normal"
-                                    />
+
+                                    <FormControl error={message.match(/name/i) ? true : false} className={classes.personalInfoTextField} aria-describedby="component-name">
+                                        <InputLabel htmlFor="name">Имя</InputLabel>
+                                        <Input id="name" type="name" value={this.state.name} onChange={(event) => { this.handleInfoChange(event)('name') }} />
+                                        <FormHelperText error={message.match(/name/i) ? true : false} id="component-name">
+                                            {message.match(/name/i) ? message : null}
+                                        </FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl error={message.match(/email/i) ? true : false} className={classes.personalInfoTextField} aria-describedby="component-email">
+                                        <InputLabel htmlFor="email">E-mail</InputLabel>
+                                        <Input id="email" type="email" value={this.state.email} onChange={(event) => { this.handleInfoChange(event)('email') }} />
+                                        <FormHelperText error={message.match(/email/i) ? true : false} id="component-email">
+                                            {message.match(/email/i) ? message : null}
+                                        </FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl error={message.match(/password/i) ? true : false} className={classes.personalInfoTextField} aria-describedby="component-password">
+                                        <InputLabel htmlFor="password">Пароль</InputLabel>
+                                        <Input id="password" type="password" value={this.state.password} onChange={(event) => { this.handleInfoChange(event)('password') }} />
+                                        <FormHelperText error={message.match(/password/i) ? true : false} id="component-password">
+                                            {message.match(/password/i) ? message : null}
+                                        </FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl error={message.match(/age/i) ? true : false} className={classes.personalInfoTextField} aria-describedby="component-age">
+                                        <InputLabel htmlFor="age">Возраст</InputLabel>
+                                        <Input id="age" type="age" value={this.state.age} onChange={(event) => { this.handleInfoChange(event)('age') }} />
+                                        <FormHelperText error={message.match(/age/i) ? true : false} id="component-age">
+                                            {message.match(/age/i) ? message : null}
+                                        </FormHelperText>
+                                    </FormControl>
+
+                                    <FormControl error={message.match(/city/i) ? true : false} className={classes.personalInfoTextField} aria-describedby="component-city">
+                                        <InputLabel htmlFor="city">Город</InputLabel>
+                                        <Input id="city" type="city" value={this.state.city} onChange={(event) => { this.handleInfoChange(event)('city') }} />
+                                        <FormHelperText error={message.match(/city/i) ? true : false} id="component-city">
+                                            {message.match(/city/i) ? message : null}
+                                        </FormHelperText>
+                                    </FormControl>
+
                                 </form>
                                 <div className={classNames(classes.flex, classes.justifyContentEnd)}>
-                                    <Button variant="contained" color="primary" style={{ marginRight: 5 }}>Отправить</Button>
+                                    <Button onClick={this.sendInfo} variant="contained" color="primary" style={{ marginRight: 5 }}>Отправить</Button>
                                     <Button variant="contained" color="primary">Отменить</Button>
                                 </div>
                             </Paper>
@@ -167,14 +232,18 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
-	auth: state.auth,
+    auth: state.auth,
+    pages: state.pages
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    apiRequest: (url, method, params, headers, callback) => {
+    request: (url, method, params, headers, callback) => {
 		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(apiRequest(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
+			dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE))
 		}
+    },
+    refreshTokens: (refreshToken, callback) => {
+        dispatch(refreshTokens(refreshToken, callback));
     },
 	openDrawer: () => {
 		dispatch(openDrawer());

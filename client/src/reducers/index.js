@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 //Reducers
+import refreshTokens from './refreshTokens';
 import appInterface from './appInterface';
 import signup from './signup';
 import signin from './signin';
@@ -17,7 +18,8 @@ export default combineReducers({
     auth: combineReducers({
         signin,
         signup,
-        session
+        session,
+        refreshTokens
     }),
     pages: combineReducers({
         homePage,

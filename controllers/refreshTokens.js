@@ -18,13 +18,13 @@ module.exports.refreshTokens = (req, res, next) => {
                         if(err) {
                             return next(createError());
                         }
-
+                        
                         if(pureToken === user.refreshToken) {
                             const newAccessToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                expiresIn: '25m'
+                                expiresIn: '5s'
                             });
                             const newRefreshToken = jwt.sign({
                                 email: user.email,

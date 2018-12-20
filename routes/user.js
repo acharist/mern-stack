@@ -39,4 +39,7 @@ router.delete('/:id/article/:articleID', checkAuth, user.deleteArticle);
 //Route for updating profile picture
 router.post('/:id/settings/avatar', [checkAuth, upload.single('avatar')], user.avatarUpload)
 
+//Route for uploading profile picture
+router.post('/:id/settings/common', checkAuth, user.commonSettingsUpload);
+
 module.exports = router;

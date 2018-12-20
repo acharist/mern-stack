@@ -57,21 +57,45 @@ const User = new Schema({
 
 //Validation
 User.path('email').validate((email) => {
-    if(validator.isLength(email, { min: 6, max: 100 })) {
+    if(validator.isLength(email, { min: 6, max: 30 })) {
         if(validator.isEmail(email)) {
             return true;
         } else {
             throw new Error('Email is incorrect');
         }
     } else {
-        throw new Error('Entity too large or too small');
+        throw new Error('Email entity too large or too small');
     }
 });
 
 User.path('name').validate((name) => {
-    return validator.isLength(name, { min: 1, max: 100 }) ? true : false;
+    if(validator.isAscii(name)) {
+        return validator.isLength(name, { min: 1, max: 30 }) ? true : false;
+    } else {
+        throw new Error('Name shold use only ASCII characters');
+    }
 }, {
-    message: 'Entity too large or too small'
+    message: 'Name entity too large or too small'
+});
+
+User.path('age').validate((age) => {
+    if(validator.isAscii(age)) {
+        return validator.isLength(age, { min: 1, max: 2 }) ? true : false;
+    } else {
+        throw new Error('Age shold use only ASCII characters');
+    }
+}, {
+    message: 'Age entity too large or too small'
+});
+
+User.path('city').validate((city) => {
+    if(validator.isAscii(city)) {
+        return validator.isLength(city, { min: 1, max: 30 }) ? true : false;
+    } else {
+        throw new Error('City shold use only ASCII characters');
+    }
+}, {
+    message: 'City entity too large or too small'
 });
 
 //Password hashing

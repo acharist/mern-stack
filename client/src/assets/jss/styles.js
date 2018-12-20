@@ -215,4 +215,7 @@ export const styles = theme => ({
     avatarLoadButtons: {
         display: 'flex'
     },
+    personalInfoTextField: {
+        width: '100%'
+    }
 });

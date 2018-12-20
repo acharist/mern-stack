@@ -27,6 +27,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 
+//Utils
+import isExpiredToken from '../utils/isExpiredToken';
+import getItem from '../utils/getItem';
+
 //Constants
 import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
 import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
@@ -39,11 +43,12 @@ import DELETE_POST_SUCCESS from '../constants/DELETE_POST_SUCCESS';
 import DELETE_POST_FAILURE from '../constants/DELETE_POST_FAILURE';
 
 //Actions
-import { push } from 'connected-react-router';
+import request from '../actions/request';
 import setPostId from '../actions/setPostId';
-import apiRequest from '../actions/apiRequest';
+import { push } from 'connected-react-router';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
+import refreshTokens from '../actions/refreshTokens';
 import openPostDialog from '../actions/openPostDialog';
 import closePostDialog from '../actions/closePostDialog';
 import openDeletePostDialog from '../actions/openDeletePostDialog';
@@ -58,10 +63,10 @@ import getLocalState from '../utils/getLocalState';
 class User extends Component {
     constructor(props) {
         super(props);
+        this.localState = getLocalState();
         this.state = {
             title: '',
             content: '',
-            localState: getLocalState()
         }
         this.async = this.async.bind(this);
         this.createPosts = this.createPosts.bind(this);
@@ -71,22 +76,23 @@ class User extends Component {
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleContentChange = this.handleContentChange.bind(this);
         this.isPageOwner = this.isPageOwner.bind(this);
+
+        this.accessToken = getItem('access-token');
+        this.refreshToken = getItem('refresh-token');
     }
 
     componentWillMount() {
         const pathname = this.props; //Get url path
         const id = pathname.match.params.id; //Segmented url
-        this.props.apiRequest(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
-        //Get user with typed url
-        //if user exists, render component. Otherwise, redirect to 404
+
+        this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
     }
 
-    componentDidUpdate(prevProps) {
-        const pathname = this.props;
-        const id = pathname.match.params.id;
-        (this.props.pages.userPage.user && (prevProps.pages.userPage.post.create.loading || prevProps.pages.userPage.post.delete.loading)) &&
-            this.props.apiRequest(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE)
-    }
+    // componentDidUpdate(prevProps) {
+    //     const pathname = this.props;
+    //     const id = pathname.match.params.id;
+    //     prevProps.pages.userPage.post.create.loading && this.props.pages.userPage.post.create.data && this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE)
+    // }
 
     handleTitleChange(event) {
         this.setState({title: event.target.value});
@@ -97,7 +103,7 @@ class User extends Component {
     }
 
     isPageOwner() {
-        if((this.state.localState && this.state.localState.auth.session.user.data._id)
+        if((this.localState && this.localState.auth.session.user.data._id)
            === this.props.pages.userPage.user.data._id) {
             return true;
         } else {
@@ -106,20 +112,40 @@ class User extends Component {
     }
     
     sendPost(title, content) {
-        const userId = this.props.auth.session.user.data._id;
-        this.props.apiRequest(`/api/user/${userId}/article`, 'post', { title, content })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
+        const userId = this.localState.auth.session.user.data._id;
+        const pathname = this.props;
+        const id = pathname.match.params.id;
+        if(isExpiredToken(this.accessToken)) {
+            this.props.refreshTokens(this.refreshToken, () => {
+                this.props.request(`/api/user/${userId}/article`, 'post', { title, content }, null, () => {
+                    this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+                })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
+            });
+        } else {
+            this.props.request(`/api/user/${userId}/article`, 'post', { title, content }, null, () => {
+                this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+            })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
+        }
         this.props.closePostDialog();
-        
-        this.setState({
-            title: '',
-            content: ''
-        });
     }
     
-    deletePost(event) {
-        const userId = this.props.pages.userPage.user.data._id;
+    deletePost() {
+        const userId = this.localState.auth.session.user.data._id;
         const postId = this.props.pages.userPage.user.postId;
-        this.props.apiRequest(`/api/user/${userId}/article/${postId}`, 'delete')(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
+
+        const pathname = this.props;
+        const id = pathname.match.params.id;
+        if(isExpiredToken(this.accessToken)) {
+            this.props.refreshTokens(this.refreshToken, () => {
+                this.props.request(`/api/user/${userId}/article/${postId}`, 'delete', null, null, () => {
+                    this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE)
+                })(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
+            });
+        } else {
+            this.props.request(`/api/user/${userId}/article/${postId}`, 'delete', null, null, () => {
+                this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+            })(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
+        }
         this.props.closeDeletePostDialog();
     }
 
@@ -239,10 +265,23 @@ class User extends Component {
     }
 
     render() {
-        const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+        const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
         return (
             <div>
+            {/* hangle all request and use laoder*/}
                 {pages.userPage.user.loading && <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>}
+                
+                {auth.refreshTokens.loading && <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>}
+                
+                {pages.userPage.post.create.loading && <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>}
+                
+                {pages.userPage.post.delete.loading && <div className={classes.loader}>
                     <CircularProgress/>
                 </div>}
 
@@ -263,10 +302,13 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    apiRequest: (url, method, params) => {
+    request: (url, method, params, headers, callback) => {
 		return (REQEST, SUCCESS, FAILURE) => {
-            return dispatch(apiRequest(url, method, params)(REQEST, SUCCESS, FAILURE));
+			dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE))
 		}
+    },
+    refreshTokens: (refreshToken, callback) => {
+        dispatch(refreshTokens(refreshToken, callback));
     },
     openDrawer: () => {
 		dispatch(openDrawer());

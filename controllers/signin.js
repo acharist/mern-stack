@@ -10,6 +10,7 @@ module.exports.signIn = (req, res, next) => {
             if (err) {
                 return next(createError());
             }
+            
             if (user) {
                 if (req.body.password) {
                     user.comparePassword(req.body.password, (err, isMatch) => {
@@ -23,7 +24,7 @@ module.exports.signIn = (req, res, next) => {
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                expiresIn: '25m'
+                                expiresIn: '5s'
                             });
                         
                             const refreshToken = jwt.sign({

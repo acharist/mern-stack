@@ -64,7 +64,7 @@ module.exports.signUp = (req, res, next) => {
             email: user.email,
             id: user._id
         }, key, {
-            expiresIn: '25m'
+            expiresIn: '5s'
         });
     
         const refreshToken = jwt.sign({

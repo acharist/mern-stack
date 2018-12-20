@@ -1,124 +1,154 @@
-//THIS IS SIMPLE VERSION OF PROTECTED ROUTER HOC
-//IT CAN BE MODIFIED BY ADDING SOME SPECIFIC SERVER API FOR
-//CHECKING VALIDITY OF TOKENS 
 import React, { Component } from 'react';
 import { push } from 'connected-react-router';
 import { connect } from 'react-redux';
 
-//State
-import { store } from '../store/store';
+//Styles
+import { styles } from '../assets/jss/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 //Utils
-import saveStateToStorage from '../utils/saveStateToStorage';
+import isExpiredToken from '../utils/isExpiredToken';
 import getLocalState from '../utils/getLocalState';
 import getItem from '../utils/getItem';
+import jwtDecode from 'jwt-decode';
 
 //Actions
+import CircularProgress from '@material-ui/core/CircularProgress';
 import setUserTokens from '../actions/setUserTokens';
+import refreshTokens from '../actions/refreshTokens';
 import setUserData from '../actions/setUserData';
-import apiRequest from '../actions/apiRequest';
 import logOut from '../actions/logOut';
 
 //Constants
-import REFRESH_SESSION_DATA_REQUEST from '../constants/REFRESH_SESSION_DATA_REQUEST';
-import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCCESS';
-import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
+import RESET_REFRESHED from '../constants/RESET_REFRESHED';
 
 export default function (WrappedComponent) {
-    class checkLocalStateHOC extends Component {
+    class ProtectRoute extends Component {
         constructor(props) {
             super(props);
 
             this._check = this._check.bind(this);
-            this._checkAndRedirect = this._checkAndRedirect.bind(this);
+            this._logOut = this._logOut.bind(this);
             this._checkForLocalState = this._checkForLocalState.bind(this);
-            this._checkAndValidateTokens = this._checkAndValidateTokens.bind(this);
+            this._getDecodedLocalTokens = this._getDecodedLocalTokens.bind(this);
+            this._checkForTokensRefresh = this._checkForTokensRefresh.bind(this);
         }
 
         componentWillMount() {
-            this._checkAndRedirect();
-            //Set new user data every time before render component
-            if(this._check()) {
-                const id = getLocalState().auth.session.user.data._id;
-                this.props.apiRequest(`/api/user/${id}`, 'get', null, null, 
-                    (state) => { saveStateToStorage(store.getState()) }
-                )(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE)
-            }
-        }
-        
-        componentDidMount() {
-            this._checkAndRedirect();
+            this._refreshTokens();
+            this._logOut();
         }
 
-        componentDidUpdate() {
-            this._checkAndRedirect();
+        componentDidUpdate(prevProps) {
+            if(prevProps.auth.refreshTokens.loading) {
+                this.props.resetRefreshed();
+            }
+        }
+
+        _checkForTokensRefresh() {
+            if (this._check()) { // If local state and tokens are whole
+                // const { decodedAccessToken, decodedRefreshToken } = this._getDecodedLocalTokens();
+                const accessToken = getItem('access-token');
+                const refreshToken = getItem('refresh-token');
+                if (isExpiredToken(accessToken)) {
+                    if (isExpiredToken(refreshToken)) {
+                        return false; //Both tokens are expired, need to logIn again 
+                    } else {
+                        return true; //Tht's the case when need to send request for new tokens
+                    }
+                } else {
+                    return false; //Everything OK, still can use access token
+                }
+            } else {
+                return false;
+            }
+        }
+
+        _refreshTokens() {
+            if (this._checkForTokensRefresh()) { // Check if need to send request for refresh tokens
+                // Need to use api request for getting new tokes
+                const refreshToken = getItem('refresh-token');
+                this.props.refreshTokens(refreshToken);
+            }
         }
 
         _checkForLocalState() {
             const localState = getLocalState();
-            if(localState === undefined) {
+            if (localState === undefined) {
                 return false;
             } else {
                 return true;
             }
         }
 
-        _checkAndValidateTokens() {
+        _getDecodedLocalTokens() { // Check if tokens are consists in local storage
             try {
                 const accessToken = getItem('access-token');
                 const refreshToken = getItem('refresh-token');
-                //This is simple method of checking user local tokens!!!
-                //Modification can goes here 
-                const splittedAccessToken = accessToken.split(' ');
-                const splittedRefreshToken = refreshToken.split(' ');
 
-                if(splittedAccessToken[1].length < 190 || splittedAccessToken[1].length > 220) {
-                    return false;
-                } else if(splittedRefreshToken[1].length < 190 || splittedRefreshToken[1].length > 220) {
-                    return false;
-                } else {
-                    return true;
-                }
-                //Modification can goes here
-            } catch(err) { //Get info about user every time decorated component renders and write it into redux store
+                const pureAccessToken = accessToken.split(' ')[1];
+                const pureRefreshToken = refreshToken.split(' ')[1];
+
+                const decodedAccessToken = jwtDecode(pureAccessToken);
+                const decodedRefreshToken = jwtDecode(pureRefreshToken);
+
+                return { decodedAccessToken, decodedRefreshToken }
+            } catch (err) {
                 return false;
             }
         }
 
-        _check() {
-            return this._checkForLocalState() && this._checkAndValidateTokens() ? true : false;
+        _check() { // Check if tokens and copy of local state are whole
+            return this._checkForLocalState() && this._getDecodedLocalTokens() ? true : false;
         }
-        
-        _checkAndRedirect() {
-            if(!this._check()) {
+
+        _logOut() {
+            if (!this._check()) {
                 this.props.logOut();
                 this.props.redirectToSignin();
-            } else {
-                const accessToken = getItem('access-token');
-                const refreshToken = getItem('refresh-token');
-                //Set state to authenticated and then show top menu
-                // this.props.setUserData(getLocalState().auth.session.user.data); //While the functionality is not ready, put the data from the local storage here.
-                
-                this.props.setUserTokens({ accessToken, refreshToken });
             }
         }
 
         render() {
-            return this._check() ? <WrappedComponent {...this.props}/> : null
+            const { auth, classes } = this.props;
+            {
+                if(this._check()) {
+                    if(this._checkForTokensRefresh()) {
+                        if(auth.refreshTokens.loading) {
+                            return <div className={classes.loader}>
+                                        <CircularProgress/>
+                                    </div>
+                        } else if(auth.refreshTokens.refreshed) {
+                            return <WrappedComponent {...this.props} />
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        return <WrappedComponent {...this.props} />
+                    }
+                } else {
+                    return null;
+                }
+            }
         }
     }
 
+    const mapStateToProps = (state) => ({
+        auth: state.auth
+    });
+
     const mapDispatchToProps = (dispatch) => ({
-        apiRequest: (url, method, params, headers, callback) => {
-            return (REQEST, SUCCESS, FAILURE) => {
-                dispatch(apiRequest(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
-            }
+        refreshTokens: (refreshToken) => {
+            dispatch(refreshTokens(refreshToken));
         },
         setUserData: (data) => {
             dispatch(setUserData(data));
         },
         setUserTokens: (tokens) => {
             dispatch(setUserTokens(tokens));
+        },
+        resetRefreshed: () => {
+            dispatch({ type: RESET_REFRESHED });
         },
         redirectToSignin: () => {
             dispatch(push('/signin'))
@@ -128,5 +158,6 @@ export default function (WrappedComponent) {
         }
     })
 
-    return connect(null, mapDispatchToProps)(checkLocalStateHOC)
+    ProtectRoute = withStyles(styles)(ProtectRoute);
+    return connect(mapStateToProps, mapDispatchToProps)(ProtectRoute)
 }

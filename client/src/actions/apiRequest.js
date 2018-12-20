@@ -17,7 +17,7 @@ const request = (url, method, params, headers, callback, accessToken) => {
     return (REQUEST, SUCCESS, FAILURE) => {
         return (dispatch) => {
             dispatch({ type: REQUEST, payload: true });
-            axios.defaults.headers.common['Authorization'] = accessToken;
+            axios.defaults.headers.common['authorization'] = accessToken;
             axios[method](url, params, headers)
                 .then((res) => {
                     dispatch({ type: SUCCESS, payload: res.data });
@@ -58,6 +58,7 @@ const requestWithTokensRefresh = (url, method, params, headers, request, callbac
                         })
                         //Else, tell user, that this is some error
                         .catch(() => {
+                            console.error('Error!')
                             //err - refreshTokens error
                             dispatch(disableSession());
                             dispatch(push('/signin'));

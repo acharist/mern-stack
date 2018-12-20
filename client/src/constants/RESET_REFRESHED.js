@@ -1,0 +1,2 @@
+const RESET_REFRESHED = 'RESET_REFRESHED';
+export default RESET_REFRESHED;

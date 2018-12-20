@@ -28,7 +28,6 @@ export default (email, password) => {
             
             
             dispach({ type: SIGNIN_USER_SUCCESS });
-            dispach(setUserTokens({ accessToken, refreshToken }));
             dispach(setUserData(data.data.data));
             
             //After successfully changing the state, save its local copy

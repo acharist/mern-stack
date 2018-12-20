@@ -1,10 +1,17 @@
 import axios from 'axios';
 import saveTokenToStorage from '../utils/saveTokenToStorage';
+import { push } from 'connected-react-router';
+import isFuncrion from '../utils/isFunction';
+import logOut from '../actions/logOut';
 
-import REFRESH_TOKENS from '../constants/REFRESH_TOKENS';
+import REFRESH_TOKENS_REQUEST from '../constants/REFRESH_TOKENS_REQUEST';
+import REFRESH_TOKENS_SUCCESS from '../constants/REFRESH_TOKENS_SUCCESS';
+import REFRESH_TOKENS_FAILURE from '../constants/REFRESH_TOKENS_FAILURE';
 
-export default (refreshToken, requestWait) => { //requestWait is an array and there is other res/rej async callbacks
+export default (refreshToken, callback) => { //requestWait is an array and there is other res/rej async callbacks
     return (dispach) => {
+        dispach({ type: REFRESH_TOKENS_REQUEST })
+
         const options = {
             method: 'POST',
             headers: { 'authorization': refreshToken },
@@ -15,11 +22,15 @@ export default (refreshToken, requestWait) => { //requestWait is an array and th
             const { accessToken, refreshToken } = res.data;
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
-            dispach({ type: REFRESH_TOKENS });
-            requestWait[0](res); //Call async res
+            dispach({ type: REFRESH_TOKENS_SUCCESS });
+            if(isFuncrion(callback)) {
+                callback();
+            } 
         })
         .catch((err) => {
-            requestWait[1](err); //Call async rej
+            dispach({ type: REFRESH_TOKENS_FAILURE, payload: err.data }); 
+            dispach(logOut());
+            dispach(push('/signin'))
         });
     }
 }

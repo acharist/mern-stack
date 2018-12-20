@@ -28,7 +28,7 @@ import { styles } from '../assets/jss/styles';
 
 import classNames from 'classnames';
 
-import apiRequest from '../actions/apiRequest';
+import request from '../actions/request';
 import GET_USERS_REQUEST from '../constants/GET_USERS_REQUEST';
 import GET_USERS_SUCCESS from '../constants/GET_USERS_SUCCESS';
 import GET_USERS_FAILURE from '../constants/GET_USERS_FAILURE';
@@ -40,8 +40,8 @@ class Home extends Component {
 		this.changeLocation = this.changeLocation.bind(this);
 	}
 
-	componentDidMount() {
-		this.props.apiRequest('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
+	componentWillMount() {
+		this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
 	}
 
 	changeLocation(event) {
@@ -63,7 +63,7 @@ class Home extends Component {
 
 	showUsers(users, classes) {
 		const arrOfUsers = [];
-		users.forEach((user, index) => {
+		users.forEach((user) => {
 			arrOfUsers.push(
 				
 				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id}>
@@ -102,9 +102,13 @@ class Home extends Component {
 	}
 
 	render() {
-		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
 		return (
 			<div className="Home">
+				{pages.userPage.user.loading || auth.refreshTokens.loading && <div className={classes.loader}>
+                    <CircularProgress/>
+                </div>}
+
 				<AppBar title="Главная" openDrawer={openDrawer}/>
 				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
@@ -133,9 +137,9 @@ const mapDispatchToProps = (dispatch) => ({
 	closeDrawer: () => {
 		dispatch(closeDrawer());
 	},
-	apiRequest: (url, method) => {
+	request: (url, method) => {
 		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(apiRequest(url, method)(REQEST, SUCCESS, FAILURE));
+			dispatch(request(url, method)(REQEST, SUCCESS, FAILURE))
 		}
 	},
 	getUserId: (id) => {

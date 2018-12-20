@@ -13,8 +13,11 @@ import { push } from 'connected-react-router';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import TopMenu from './TopMenu'
+import TopMenu from './TopMenu';
+
+import getLocalState from '../utils/getLocalState';
 
 //Actions
 import openTopMenu from '../actions/openTopMenu';
@@ -34,6 +37,8 @@ class ButtonAppBar extends Component {
             redirectToSignin, redirectToSignup, auth,
              appInterface } = this.props;
 
+        const localState = getLocalState();
+
         const authButtons = (
             <div>
                 <Button color="inherit" onClick={redirectToSignin}>Вход</Button>
@@ -51,15 +56,15 @@ class ButtonAppBar extends Component {
                     this.anchorEl = node;
                   }}>
 
-                <Avatar className={classes.avatar} alt="Remy Sharp" src={auth.session.user.data.avatarUrl } />
+                <Avatar className={classes.avatar} alt="Remy Sharp" src={localState && localState.auth.session.user.data.avatarUrl} />
 
                 </IconButton>
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={auth.session.user.data.name} userEmail={auth && auth.session.user.data.email}>
-                                    <Avatar alt="Remy Sharp" src={auth && auth.session.user.data.avatarUrl} />
+                                <TopMenu userName={localState.auth.session.user.data.name} userEmail={localState.auth.session.user.data.email}>
+                                    <Avatar alt="Remy Sharp" src={localState.auth.session.user.data.avatarUrl} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -78,7 +83,7 @@ class ButtonAppBar extends Component {
                         <Typography variant="title" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {auth && auth.session.isAuthenticated ? menu : authButtons}
+                        {auth && auth.session.isAuthenticated || localState && localState.auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>

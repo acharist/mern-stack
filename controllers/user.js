@@ -2,6 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/User');
 const Article = require('../models/Article');
 const createError = require('http-errors');
+const validator = require('validator');
 
 module.exports.getAllUsers = (req, res, next) => {
     User.find({})
@@ -118,8 +119,8 @@ module.exports.createArticle = (req, res, next) => {
 
                     if (user) {
                         const article = new Article({
-                            title: req.body.title,
-                            content: req.body.content,
+                            title: validator.blacklist(req.body.title, '<>/') || '',
+                            content: validator.blacklist(req.body.content, '<>/') || '',
                             author: user._id
                         });
 
@@ -246,3 +247,68 @@ module.exports.avatarUpload = (req, res, next) => {
         return next(createError(400, 'ID is incorrect'));
     }
 }
+
+module.exports.commonSettingsUpload = (req, res, next) => {
+    const id = req.params.id;
+
+    if(id === req.user.id) {
+        User.findById({ _id: id })
+            .exec((err, user) => {
+                if(err) {
+                    return next(createError(500));
+                }
+
+                for(let key in req.body) {
+                    switch(key) {
+                        case 'name':
+                            user.name = validator.blacklist(req.body[key], '<>+-/#@%$&^!?()|,.1234567890') || user.name;
+                            break;
+                        case 'email':
+                            user.email = req.body[key] || user.email;
+                            break
+                        case 'age':
+                            user.age = validator.blacklist(req.body[key], '<>+-/#@%$&^!?()|,.') || user.age;
+                            break;
+                        case 'city':
+                            user.city = validator.blacklist(req.body[key], '<>+-/#@%$&^!?()|,.1234567890') || user.city;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                    
+                user.save(err => {
+                    if(err) {
+                        if(err.name = 'MongoError') {
+                            if(err.errors.name) {
+                                return next(createError(400, err.errors.name.message));
+                            } else if(err.errors.email) {
+                                return next(createError(400, err.errors.email.message));
+                            } else if(err.errors.age) {
+                                return next(createError(400, err.errors.age.message));
+                            } else if(err.errors.city) {
+                                return next(createError(400, err.errors.city.message));
+                            } else {
+                                return next(createError(500));
+                            }
+ 
+                        } else {
+                            console.log(err)
+                            return next(createError(500));
+                        }
+
+                    }
+
+                    res.status(200).json({
+                        message: 'General settings successfully updated'
+                    });
+                })
+            })
+    } else {
+        return next(createError(401));
+    }
+}
+
+
+
+

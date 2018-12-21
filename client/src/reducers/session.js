@@ -1,7 +1,5 @@
 //constants
-import SET_USER_TOKENS from '../constants/SET_USER_TOKENS';
 import DISABLE_SESSION from '../constants/DISABLE_SESSION';
-import REFRESH_TOKENS from '../constants/REFRESH_TOKENS';
 import SET_USER_DATA from '../constants/SET_USER_DATA';
 import LOGOUT from '../constants/LOGOUT';
 

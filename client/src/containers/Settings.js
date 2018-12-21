@@ -133,7 +133,7 @@ class Settings extends Component {
         const message = pages.settingsPage.data.errorData && pages.settingsPage.data.errorData.message;
         return (
             <div>
-                {pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading && <div className={classes.loader}>
+                {(pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading) && <div className={classes.loader}>
                     <CircularProgress/>
                 </div>}
 

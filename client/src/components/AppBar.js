@@ -13,7 +13,6 @@ import { push } from 'connected-react-router';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Popper from '@material-ui/core/Popper';
 import Fade from '@material-ui/core/Fade';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import TopMenu from './TopMenu';
 
@@ -34,7 +33,7 @@ class ButtonAppBar extends Component {
     render() {
         const { classes, openDrawer, 
             openTopMenu, closeTopMenu, title, 
-            redirectToSignin, redirectToSignup, auth,
+            redirectToSignin, redirectToSignup,
              appInterface } = this.props;
 
         const localState = getLocalState();
@@ -51,7 +50,6 @@ class ButtonAppBar extends Component {
                 <IconButton onClick={openTopMenu}
                   color="inherit" aria-haspopup="true"
                   aria-owns={appInterface.isTopMenuOpen ? 'menu-appbar' : undefined}
-                  color="inherit"
                   buttonRef={node => {
                     this.anchorEl = node;
                   }}>
@@ -83,7 +81,7 @@ class ButtonAppBar extends Component {
                         <Typography variant="title" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {auth && auth.session.isAuthenticated || localState && localState.auth.session.isAuthenticated ? menu : authButtons}
+                        {localState.auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>

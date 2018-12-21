@@ -105,7 +105,7 @@ class Home extends Component {
 		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
 		return (
 			<div className="Home">
-				{pages.userPage.user.loading || auth.refreshTokens.loading && <div className={classes.loader}>
+				{(pages.userPage.user.loading || auth.refreshTokens.loading) && <div className={classes.loader}>
                     <CircularProgress/>
                 </div>}
 
@@ -143,7 +143,6 @@ const mapDispatchToProps = (dispatch) => ({
 		}
 	},
 	getUserId: (id) => {
-		console.log(id)
 		dispatch(getUserId(id));
 	},
 	changeLocation: (id) => {

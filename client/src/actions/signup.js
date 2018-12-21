@@ -9,7 +9,6 @@ import saveTokenToStorage from '../utils/saveTokenToStorage';
 import saveStateToStorage from '../utils/saveStateToStorage';
 import { push } from 'connected-react-router';
 
-import setUserTokens from './setUserTokens';
 import setUserData from './setUserData';
 
 export default (name, email, password) => {
@@ -27,9 +26,7 @@ export default (name, email, password) => {
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
 
-            console.log(data)
             dispach({ type: SIGNUP_USER_SUCCESS });
-            dispach(setUserTokens({ accessToken, refreshToken })); //Enable session after success auth
             dispach(setUserData(data.data.data));
             
             //After successfully changing the state, save its local copy (for user session)

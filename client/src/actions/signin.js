@@ -9,7 +9,6 @@ import saveTokenToStorage from '../utils/saveTokenToStorage';
 import saveStateToStorage from '../utils/saveStateToStorage';
 import { push } from 'connected-react-router';
 
-import setUserTokens from './setUserTokens';
 import setUserData from './setUserData';
 
 export default (email, password) => {

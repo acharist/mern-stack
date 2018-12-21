@@ -11,7 +11,6 @@ export default (url, method, params, headers, callback) => {
 
             axios[method](url, params, headers)
                 .then((res) => {
-                    console.log(res.data)
                     dispatch({ type: SUCCESS, payload: res.data });
                     //Call callback if ok
                     if(isFuncrion(callback)) {

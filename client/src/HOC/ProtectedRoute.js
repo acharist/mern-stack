@@ -14,7 +14,6 @@ import jwtDecode from 'jwt-decode';
 
 //Actions
 import CircularProgress from '@material-ui/core/CircularProgress';
-import setUserTokens from '../actions/setUserTokens';
 import refreshTokens from '../actions/refreshTokens';
 import setUserData from '../actions/setUserData';
 import logOut from '../actions/logOut';
@@ -111,24 +110,23 @@ export default function (WrappedComponent) {
 
         render() {
             const { auth, classes } = this.props;
-            {
-                if(this._check()) {
-                    if(this._checkForTokensRefresh()) {
-                        if(auth.refreshTokens.loading) {
-                            return <div className={classes.loader}>
-                                        <CircularProgress/>
-                                    </div>
-                        } else if(auth.refreshTokens.refreshed) {
-                            return <WrappedComponent {...this.props} />
-                        } else {
-                            return null;
-                        }
-                    } else {
+
+            if(this._check()) {
+                if(this._checkForTokensRefresh()) {
+                    if(auth.refreshTokens.loading) {
+                        return <div className={classes.loader}>
+                                    <CircularProgress/>
+                                </div>
+                    } else if(auth.refreshTokens.refreshed) {
                         return <WrappedComponent {...this.props} />
+                    } else {
+                        return null;
                     }
                 } else {
-                    return null;
+                    return <WrappedComponent {...this.props} />
                 }
+            } else {
+                return null;
             }
         }
     }
@@ -143,9 +141,6 @@ export default function (WrappedComponent) {
         },
         setUserData: (data) => {
             dispatch(setUserData(data));
-        },
-        setUserTokens: (tokens) => {
-            dispatch(setUserTokens(tokens));
         },
         resetRefreshed: () => {
             dispatch({ type: RESET_REFRESHED });

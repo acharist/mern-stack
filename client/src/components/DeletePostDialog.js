@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -15,7 +14,7 @@ import closeDeletePostDialog from '../actions/closeDeletePostDialog';
 
 class DeletePostDialog extends Component {
     render() {
-        const { appInterface, openDeletePostDialog, closeDeletePostDialog, deletePost } = this.props;
+        const { appInterface, closeDeletePostDialog, deletePost } = this.props;
         return (
             <div>
                 <Dialog

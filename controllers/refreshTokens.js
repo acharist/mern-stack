@@ -24,7 +24,7 @@ module.exports.refreshTokens = (req, res, next) => {
                                 email: user.email,
                                 id: user._id
                             }, key, {
-                                expiresIn: '5s'
+                                expiresIn: '25m'
                             });
                             const newRefreshToken = jwt.sign({
                                 email: user.email,

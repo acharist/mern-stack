@@ -42,7 +42,7 @@ class TopMenu extends Component {
                                           {children}
                         {/* Avatar component ↑↑↑ */}
                         <div className={classes.userInfo}>
-                            <Typography variant="subheading" className={classes.userName}>
+                            <Typography variant="h6" className={classes.userName}>
                                 {userName}
                             </Typography>
                             <Typography className={classes.userEmail}>

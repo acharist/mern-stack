@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+import { push } from 'connected-react-router';
+import classNames from 'classnames';
+
+//Styles
+import { styles } from '../assets/jss/styles';
+
+//Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
 
 //Components
-import AppBar from '../components/AppBar';
-import AppDrawer from '../components/AppDrawer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -14,21 +22,15 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 
 //Icons
-import PersonAdd from '@material-ui/icons/PersonAdd';
-import Message from '@material-ui/icons/Message';
+import SubdirectoryArrowRight from '@material-ui/icons/SubdirectoryArrowRight';
 
 //Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import getUserId from '../actions/getUserId';
-
-import { withStyles } from '@material-ui/core/styles';
-import { push } from 'connected-react-router';
-import { styles } from '../assets/jss/styles';
-
-import classNames from 'classnames';
-
 import request from '../actions/request';
+
+//Constants
 import GET_USERS_REQUEST from '../constants/GET_USERS_REQUEST';
 import GET_USERS_SUCCESS from '../constants/GET_USERS_SUCCESS';
 import GET_USERS_FAILURE from '../constants/GET_USERS_FAILURE';
@@ -77,21 +79,20 @@ class Home extends Component {
 					</CardActionArea>
 					<div className={classNames(classes.flex, classes.w50, classes.flexColumn)}>
 						<CardContent className={classes.cardContent}>
-							<Typography gutterBottom variant="title" component="h3">
+							<Typography gutterBottom variant="h6">
 								{user.name}
 							</Typography>
-							<Typography component="p">
+							<Typography variant="body1" style={{ marginBottom: 5 }}>
+								{user.age ? `${user.age} лет` : 'Возраст не указан'}
+							</Typography>
+							<Typography variant="body1">
 								{user.city || 'Город не указан'}
 							</Typography>
 						</CardContent>
 						<CardActions className={classNames(classes.flex, classes.alignItemsStart, classes.flexColumn)}>
-							<Button className={classNames(classes.w100, classes.flex, classes.justifyContentStart, classes.sFont)} size="small" color="primary">
-								<Message className={classes.xsMargin}/>
-								Написать сообщение
-							</Button>
-							<Button className={classNames(classes.w100, classes.flex, classes.justifyContentStart, classes.sFont)} size="small" color="primary">
-								<PersonAdd className={classes.xsMargin}/>
-								Подписаться
+							<Button className={classNames(classes.w100, classes.flex, classes.justifyContentStart, classes.sFont)} size="small" color="primary" data-key={user._id} onClick={this.changeLocation}>
+								<SubdirectoryArrowRight className={classes.xsMargin}/>
+								Посмотреть профиль
 							</Button>
 						</CardActions>
 					</div>
@@ -105,16 +106,12 @@ class Home extends Component {
 		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
 		return (
 			<div className="Home">
-				{(pages.userPage.user.loading || auth.refreshTokens.loading) && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-
-				<AppBar title="Главная" openDrawer={openDrawer}/>
-				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
-
 				{pages.homePage.loading && <div className={classes.loader}>
                     <CircularProgress/>
                 </div>}
+				
+				<AppBar title="Главная" openDrawer={openDrawer}/>
+				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
 				<div className={classNames(classes.cardsArea, classes.flex, classes.flexWrap)}>
 					{!!pages.homePage.data.length && this.showUsers(pages.homePage.data.users, classes)}
@@ -124,7 +121,7 @@ class Home extends Component {
 	}
 }
 
-const mapStateToProps = (state, props) => ({
+const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
 	pages: state.pages,
 	auth: state.auth,

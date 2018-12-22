@@ -61,8 +61,8 @@ class ButtonAppBar extends Component {
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={localState.auth.session.user.data.name} userEmail={localState.auth.session.user.data.email}>
-                                    <Avatar alt="Remy Sharp" src={localState.auth.session.user.data.avatarUrl} />
+                                <TopMenu userName={localState && localState.auth.session.user.data.name} userEmail={localState && localState.auth.session.user.data.email}>
+                                    <Avatar alt="Remy Sharp" src={localState && localState.auth.session.user.data.avatarUrl} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -78,10 +78,10 @@ class ButtonAppBar extends Component {
                         <IconButton className={classes.menuButton} color="inherit" aria-label="Menu" onClick={openDrawer}>
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="title" color="inherit" className={classes.grow}>
+                        <Typography variant="h6" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {localState.auth.session.isAuthenticated ? menu : authButtons}
+                        {localState && localState.auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>

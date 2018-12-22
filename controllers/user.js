@@ -293,7 +293,6 @@ module.exports.commonSettingsUpload = (req, res, next) => {
                             }
  
                         } else {
-                            console.log(err)
                             return next(createError(500));
                         }
 

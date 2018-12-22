@@ -1,29 +1,28 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
+//Containers
+import DeletePostDialog from '../containers/DeletePostDialog'
+import AppDrawer from '../containers/AppDrawer';
+import AppBar from '../containers/AppBar';
+
+//Components
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
-
-import AppBar from '../components/AppBar';
-import AppDrawer from '../components/AppDrawer';
-import DeletePostDialog from '../components/DeletePostDialog'
-
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
-
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import TextField from '@material-ui/core/TextField';
 import DialogActions from '@material-ui/core/DialogActions';
-
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -57,7 +56,7 @@ import closeDeletePostDialog from '../actions/closeDeletePostDialog';
 //Styles
 import { styles } from '../assets/jss/styles';
 
-import classNames from 'classnames';
+//Utils
 import getLocalState from '../utils/getLocalState';
 
 class User extends Component {
@@ -234,14 +233,14 @@ class User extends Component {
                                 />
                                 <CardContent>
                                     <div className={classNames(classes.flex, classes.alignItemsCenter)}>
-                                        <Typography gutterBottom variant="title" className={classes.userName} component="h2">
+                                        <Typography gutterBottom variant="subtitle2" className={classes.userName}>
                                             {`${user.name},`}
                                         </Typography>
-                                        <Typography component="p" className={classes.userAge}>
+                                        <Typography variant="body1" className={classes.userAge}>
                                             {user.age || 'Возраст не указан'}
                                         </Typography>
                                     </div>
-                                    <Typography component="p" className={classes.userCity}>
+                                    <Typography variant="body1" className={classes.userCity}>
                                         {user.city || 'Город не указан'}
                                     </Typography>
                                 </CardContent>

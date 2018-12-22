@@ -1,30 +1,30 @@
 import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import PropTypes from 'prop-types';
 
 //Components
-import AppBar from '../components/AppBar';
-import AppDrawer from '../components/AppDrawer';
-import ErrorSnackbar from '../components/ErrorSnackbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Input from '@material-ui/core/Input';
 
+//Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
+import ErrorSnackbar from '../containers/ErrorSnackbar';
+
+//Styles
 import { styles } from '../assets/jss/styles';
 
 //Actions
-import signup from '../actions/signup';
-import openDrawer from '../actions/openDrawer';
-import closeDrawer from '../actions/closeDrawer';
 import openErrorSnackbar from '../actions/openErrorSnackbar';
-
-//Utils
-// import sendTokens from '../utils/sendToken';
+import closeDrawer from '../actions/closeDrawer';
+import openDrawer from '../actions/openDrawer';
+import signup from '../actions/signup';
 
 class Signup extends Component {
     constructor(props) {

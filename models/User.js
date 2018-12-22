@@ -16,8 +16,8 @@ const User = new Schema({
         type: String,
     },
     age: {
-        type: String,
-        default: ''
+        type: Number,
+        default: 0
     },
     city: {
         type: String,
@@ -57,45 +57,31 @@ const User = new Schema({
 
 //Validation
 User.path('email').validate((email) => {
-    if(validator.isLength(email, { min: 6, max: 30 })) {
+    if(validator.isLength(email, { min: 6, max: 100 })) {
         if(validator.isEmail(email)) {
             return true;
         } else {
             throw new Error('Email is incorrect');
         }
     } else {
-        throw new Error('Email entity too large or too small');
+        throw new Error('Entity too large or too small');
     }
 });
 
 User.path('name').validate((name) => {
-    if(validator.isAscii(name)) {
-        return validator.isLength(name, { min: 1, max: 30 }) ? true : false;
+    if(validator.isLength(name, { min: 1, max: 100 })) {
+        return true;
     } else {
-        throw new Error('Name shold use only ASCII characters');
+        throw new Error('Entity too large or too small');
     }
-}, {
-    message: 'Name entity too large or too small'
 });
 
 User.path('age').validate((age) => {
-    if(validator.isAscii(age)) {
-        return validator.isLength(age, { min: 1, max: 2 }) ? true : false;
+    if(age < 120) {
+        return true;
     } else {
-        throw new Error('Age shold use only ASCII characters');
+        throw new Error('Entity too large or too small');
     }
-}, {
-    message: 'Age entity too large or too small'
-});
-
-User.path('city').validate((city) => {
-    if(validator.isAscii(city)) {
-        return validator.isLength(city, { min: 1, max: 30 }) ? true : false;
-    } else {
-        throw new Error('City shold use only ASCII characters');
-    }
-}, {
-    message: 'City entity too large or too small'
 });
 
 //Password hashing

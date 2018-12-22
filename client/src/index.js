@@ -10,12 +10,12 @@ import { ConnectedRouter } from 'connected-react-router';
 import { store, history } from './store/store';
 
 //Pages
-import Signin from './containers/Signin';
-import Signup from './containers/Signup';
-import Home from './containers/Home';
-import User from './containers/User';
-import Settings from './containers/Settings';
-import NotFound from './containers/NotFound';
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
+import Home from './pages/Home';
+import User from './pages/User';
+import Settings from './pages/Settings';
+import NotFound from './pages/NotFound';
 
 //Matherial theme config
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';

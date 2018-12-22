@@ -22,7 +22,7 @@ export default (name, email, password) => {
         })
         .then((data) => {
             const { accessToken, refreshToken } = data.data;
-            
+            console.log(data)
             saveTokenToStorage('access-token', accessToken);
             saveTokenToStorage('refresh-token', refreshToken);
 

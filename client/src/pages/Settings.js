@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
+//Components
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -12,9 +14,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import FormHelperText from '@material-ui/core/FormHelperText';
 
-
-import AppBar from '../components/AppBar';
-import AppDrawer from '../components/AppDrawer';
+//Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
 
 //Constants
 import UPDATE_INFO_REQUEST from '../constants/UPDATE_INFO_REQUEST';
@@ -42,11 +44,11 @@ import { styles } from '../assets/jss/styles';
 //Store
 import { store } from '../store/store';
 
+//Utils
 import saveStateToStorage from '../utils/saveStateToStorage';
 import isExpiredToken from '../utils/isExpiredToken';
 import getLocalState from '../utils/getLocalState';
 import getItem from '../utils/getItem';
-import classNames from 'classnames';
 
 class Settings extends Component {
     constructor(props) {
@@ -144,7 +146,7 @@ class Settings extends Component {
                     <Grid container spacing={24} justify="center">
                         <Grid item xs={10}>
                             <Paper className={classes.innerPadding}>
-                                <Typography variant="subtitle1" component="h2" className={classes.settingsTitle}>
+                                <Typography variant="subtitle1" className={classes.settingsTitle}>
                                     Изображение профиля
                                 </Typography>
                                 <form>
@@ -171,7 +173,7 @@ class Settings extends Component {
                         </Grid>
                         <Grid item xs={10}>
                             <Paper className={classes.innerPadding}>
-                                <Typography variant="subtitle1" component="h2" className={classes.settingsTitle}>
+                                <Typography variant="subtitle1" className={classes.settingsTitle}>
                                     Персональная информация
                                 </Typography>
                                 <form style={{ marginBottom: 40 }}>

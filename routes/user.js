@@ -13,9 +13,9 @@ var storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
-//user controller
+//User controller
 const user = require('../controllers/user');
 
 //Route for getting all users

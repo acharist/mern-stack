@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
-import { push } from 'connected-react-router';
 import classNames from 'classnames';
 
 //Styles
 import { styles } from '../assets/jss/styles';
+
+// Higher-Order Components
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 
 //Containers
 import AppBar from '../containers/AppBar';
@@ -13,18 +14,19 @@ import AppDrawer from '../containers/AppDrawer';
 
 //Components
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
 
 //Icons
 import SubdirectoryArrowRight from '@material-ui/icons/SubdirectoryArrowRight';
 
 //Actions
+import { push } from 'connected-react-router';
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 import getUserId from '../actions/getUserId';
@@ -42,8 +44,8 @@ class Home extends Component {
 		this.changeLocation = this.changeLocation.bind(this);
 	}
 
-	componentWillMount() {
-		this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
+	async componentWillMount() {
+		await this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
 	}
 
 	changeLocation(event) {
@@ -64,10 +66,9 @@ class Home extends Component {
 	}
 
 	showUsers(users, classes) {
-		const arrOfUsers = [];
+		const arrayOfUsers = [];
 		users.forEach((user) => {
-			arrOfUsers.push(
-				
+			arrayOfUsers.push(
 				<Card className={classNames(classes.card, classes.sMargin, classes.flex)} key={user._id}>
 					<CardActionArea data-key={user._id} onClick={this.changeLocation}
 						className={classNames(classes.w50, classes.mh100)}>
@@ -99,11 +100,11 @@ class Home extends Component {
 			</Card>)
 		});
 
-		return arrOfUsers
+		return arrayOfUsers
 	}
 
 	render() {
-		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
+		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
 		return (
 			<div className="Home">
 				{pages.homePage.loading && <div className={classes.loader}>
@@ -114,7 +115,7 @@ class Home extends Component {
 				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
 				<div className={classNames(classes.cardsArea, classes.flex, classes.flexWrap)}>
-					{!!pages.homePage.data.length && this.showUsers(pages.homePage.data.users, classes)}
+					{pages.homePage.data && this.showUsers(pages.homePage.data.users, classes)}
 				</div>
 			</div>
 		);
@@ -123,21 +124,20 @@ class Home extends Component {
 
 const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
-	pages: state.pages,
-	auth: state.auth,
+	pages: state.pages
 });
 
 const mapDispatchToProps = (dispatch) => ({
+	request: (url, method, params, headers, callback) => {
+        return (REQEST, SUCCESS, FAILURE) => {
+            return dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
+        }
+    },
 	openDrawer: () => {
 		dispatch(openDrawer());
 	},
 	closeDrawer: () => {
 		dispatch(closeDrawer());
-	},
-	request: (url, method) => {
-		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(request(url, method)(REQEST, SUCCESS, FAILURE))
-		}
 	},
 	getUserId: (id) => {
 		dispatch(getUserId(id));

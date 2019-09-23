@@ -1,29 +1,32 @@
-import { connect } from 'react-redux';
-
 import React, { Component } from 'react';
+import classNames from 'classnames';
+
+//Styles
+import { styles } from '../assets/jss/styles';
+
+// Utils
+import getLocalState from '../utils/getLocalState';
+
+// Higher-Order Components
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
+
+// Actions
+import { push } from 'connected-react-router';
+import logOut from '../actions/logOut';
+import redirectToSettings from '../actions/redirectToSettings';
+
+// Components
 import Paper from '@material-ui/core/Paper';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Typography from '@material-ui/core/Typography';
-import classNames from 'classnames';
-
-import getLocalState from '../utils/getLocalState';
 
 //Icons
-import People from '@material-ui/icons/People';
 import Settings from '@material-ui/icons/Settings';
 import ExitToApp from '@material-ui/icons/ExitToApp';
-
-//Styles
-import { styles } from '../assets/jss/styles';
-
-//Actions
-import logOut from '../actions/logOut';
-import redirectToSettings from '../actions/redirectToSettings';
-import { push } from 'connected-react-router';
 
 class TopMenu extends Component {
     state = {
@@ -51,12 +54,6 @@ class TopMenu extends Component {
                         </div>
                     </Paper>
                     <MenuList>
-                        <MenuItem className={classes.menuItem}>
-                            <ListItemIcon className={classes.icon}>
-                                <People />
-                            </ListItemIcon>
-                            <ListItemText inset primary="Друзья" />
-                        </MenuItem>
                         <MenuItem className={classes.menuItem}>
                             <ListItemIcon className={classes.icon}>
                                 <Settings />

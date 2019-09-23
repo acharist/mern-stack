@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+
+//Actions
+import openDeletePostDialog from '../actions/openDeletePostDialog';
+import closeDeletePostDialog from '../actions/closeDeletePostDialog';
+
+// Higher-Order Components
 import { connect } from 'react-redux';
 
+// Components
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-//Actions
-import openDeletePostDialog from '../actions/openDeletePostDialog';
-import closeDeletePostDialog from '../actions/closeDeletePostDialog';
 
 class DeletePostDialog extends Component {
     render() {
@@ -26,15 +29,15 @@ class DeletePostDialog extends Component {
                     <DialogTitle id="alert-dialog-title">{"Удаление"}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
-                        Вы уверены, что хотите удалть данный пост?
+                            Вы уверены, что хотите удалить данный пост?
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={closeDeletePostDialog} color="primary">
-                        Отмена
+                            Отмена
                         </Button>
                         <Button onClick={deletePost} color="primary" autoFocus>
-                        Удалть
+                            Удалить
                         </Button>
                     </DialogActions>
                 </Dialog>

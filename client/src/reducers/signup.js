@@ -1,4 +1,4 @@
-//constants
+// Constants
 import SIGNUP_USER_REQUEST from '../constants/SIGNUP_USER_REQUEST';
 import SIGNUP_USER_SUCCESS from '../constants/SIGNUP_USER_SUCCESS';
 import SIGNUP_USER_FAILURE from '../constants/SIGNUP_USER_FAILURE';

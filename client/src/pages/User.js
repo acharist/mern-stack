@@ -1,63 +1,64 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-//Containers
-import DeletePostDialog from '../containers/DeletePostDialog'
-import AppDrawer from '../containers/AppDrawer';
-import AppBar from '../containers/AppBar';
+// Styles
+import { styles } from '../assets/jss/styles';
 
-//Components
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import TextField from '@material-ui/core/TextField';
-import DialogActions from '@material-ui/core/DialogActions';
-import Fab from '@material-ui/core/Fab';
-import DeleteIcon from '@material-ui/icons/Delete';
-
-//Utils
+// Utils
 import isExpiredToken from '../utils/isExpiredToken';
+import getLocalState from '../utils/getLocalState';
 import getItem from '../utils/getItem';
 
-//Constants
-import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
-import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
-import GET_USER_FAILURE from '../constants/GET_USER_FAILURE';
+// Higher-Order Components
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+
+// Actions
+import closeDeletePostDialog from '../actions/closeDeletePostDialog';
+import openDeletePostDialog from '../actions/openDeletePostDialog';
+import closePostDialog from '../actions/closePostDialog';
+import openPostDialog from '../actions/openPostDialog';
+import refreshTokens from '../actions/refreshTokens';
+import closeDrawer from '../actions/closeDrawer';
+import openDrawer from '../actions/openDrawer';
+import { push } from 'connected-react-router';
+import setPostId from '../actions/setPostId';
+import request from '../actions/request';
+
+// Constants
 import CREATE_POST_REQUEST from '../constants/CREATE_POST_REQUEST';
 import CREATE_POST_SUCCESS from '../constants/CREATE_POST_SUCCESS';
 import CREATE_POST_FAILURE from '../constants/CREATE_POST_FAILURE';
 import DELETE_POST_REQUEST from '../constants/DELETE_POST_REQUEST';
 import DELETE_POST_SUCCESS from '../constants/DELETE_POST_SUCCESS';
 import DELETE_POST_FAILURE from '../constants/DELETE_POST_FAILURE';
+import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
+import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
+import GET_USER_FAILURE from '../constants/GET_USER_FAILURE';
 
-//Actions
-import request from '../actions/request';
-import setPostId from '../actions/setPostId';
-import { push } from 'connected-react-router';
-import openDrawer from '../actions/openDrawer';
-import closeDrawer from '../actions/closeDrawer';
-import refreshTokens from '../actions/refreshTokens';
-import openPostDialog from '../actions/openPostDialog';
-import closePostDialog from '../actions/closePostDialog';
-import openDeletePostDialog from '../actions/openDeletePostDialog';
-import closeDeletePostDialog from '../actions/closeDeletePostDialog';
+// Containers
+import DeletePostDialog from '../containers/DeletePostDialog'
+import AppDrawer from '../containers/AppDrawer';
+import AppBar from '../containers/AppBar';
 
-//Styles
-import { styles } from '../assets/jss/styles';
+// Components
+import CircularProgress from '@material-ui/core/CircularProgress';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import CardMedia from '@material-ui/core/CardMedia';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import Fab from '@material-ui/core/Fab';
 
-//Utils
-import getLocalState from '../utils/getLocalState';
+// Icons
+import DeleteIcon from '@material-ui/icons/Delete';
 
 class User extends Component {
     constructor(props) {
@@ -67,7 +68,6 @@ class User extends Component {
             title: '',
             content: '',
         }
-        this.async = this.async.bind(this);
         this.createPosts = this.createPosts.bind(this);
         this.postDialog = this.postDialog.bind(this);
         this.sendPost = this.sendPost.bind(this);
@@ -80,71 +80,54 @@ class User extends Component {
         this.refreshToken = getItem('refresh-token');
     }
 
-    componentWillMount() {
-        const pathname = this.props; //Get url path
-        const id = pathname.match.params.id; //Segmented url
-
-        this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+    async componentDidMount() {
+        const pathname = this.props
+        const id = pathname.match.params.id;
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
+        }
+        try {
+            await this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+        } catch (err) {
+            this.props.redirectToNotFound();
+        }
     }
-
-    // componentDidUpdate(prevProps) {
-    //     const pathname = this.props;
-    //     const id = pathname.match.params.id;
-    //     prevProps.pages.userPage.post.create.loading && this.props.pages.userPage.post.create.data && this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE)
-    // }
 
     handleTitleChange(event) {
-        this.setState({title: event.target.value});
+        this.setState({ title: event.target.value });
     }
-    
+
     handleContentChange(event) {
-        this.setState({content: event.target.value});
+        this.setState({ content: event.target.value });
     }
 
     isPageOwner() {
-        if((this.localState && this.localState.auth.session.user.data._id)
-           === this.props.pages.userPage.user.data._id) {
-            return true;
-        } else {
-            return false;
-        }
+        return (this.localState && this.localState.auth.session.user.data._id)
+            === this.props.pages.userPage.user.data._id ? true : false;
     }
-    
-    sendPost(title, content) {
+
+    async sendPost(title, content) {
         const userId = this.localState.auth.session.user.data._id;
         const pathname = this.props;
         const id = pathname.match.params.id;
-        if(isExpiredToken(this.accessToken)) {
-            this.props.refreshTokens(this.refreshToken, () => {
-                this.props.request(`/api/user/${userId}/article`, 'post', { title, content }, null, () => {
-                    this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
-                })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
-            });
-        } else {
-            this.props.request(`/api/user/${userId}/article`, 'post', { title, content }, null, () => {
-                this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
-            })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE);
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
         }
+        await this.props.request(`/api/user/${userId}/article`, 'post', { title, content })(CREATE_POST_REQUEST, CREATE_POST_SUCCESS, CREATE_POST_FAILURE)
+        await this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
         this.props.closePostDialog();
     }
-    
-    deletePost() {
+
+    async deletePost() {
         const userId = this.localState.auth.session.user.data._id;
         const postId = this.props.pages.userPage.user.postId;
-
         const pathname = this.props;
         const id = pathname.match.params.id;
-        if(isExpiredToken(this.accessToken)) {
-            this.props.refreshTokens(this.refreshToken, () => {
-                this.props.request(`/api/user/${userId}/article/${postId}`, 'delete', null, null, () => {
-                    this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE)
-                })(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
-            });
-        } else {
-            this.props.request(`/api/user/${userId}/article/${postId}`, 'delete', null, null, () => {
-                this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
-            })(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE);
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
         }
+        await this.props.request(`/api/user/${userId}/article/${postId}`, 'delete')(DELETE_POST_REQUEST, DELETE_POST_SUCCESS, DELETE_POST_FAILURE)
+        await this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
         this.props.closeDeletePostDialog();
     }
 
@@ -152,14 +135,14 @@ class User extends Component {
         const { closePostDialog, appInterface } = this.props;
         return (
             <Dialog
-            open={appInterface.isPostDialogOpen}
-            onClose={closePostDialog}
-            aria-labelledby="form-dialog-title"
+                open={appInterface.isPostDialogOpen}
+                onClose={closePostDialog}
+                aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Создание</DialogTitle>
+                <DialogTitle id="form-dialog-title">Новый пост</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Колличество символов не должно привышать 120.
+                        Количество символов не должно привышать 120
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -182,9 +165,9 @@ class User extends Component {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={closePostDialog} color="primary">
-                        Отмена
+                        Отменить
                     </Button>
-                    <Button onClick={() => {this.sendPost(this.state.title, this.state.content)}} color="primary">
+                    <Button onClick={() => { this.state.title && this.state.content && this.sendPost(this.state.title, this.state.content) }} color="primary">
                         Создать
                     </Button>
                 </DialogActions>
@@ -208,87 +191,61 @@ class User extends Component {
                             </Typography>
                         </CardContent>
                     </Card>
-                    {this.isPageOwner() && <Fab color="secondary" onClick={() => {setPostId(post._id); openDeletePostDialog()}} aria-label="Edit" className={classes.fabDelete}>
-                        <DeleteIcon aria-label="Delete"/>
-                    </Fab>} {/* Set post ID in redux store */}
+                    {this.isPageOwner() && <Fab color="secondary" onClick={() => { setPostId(post._id); openDeletePostDialog() }} aria-label="Edit" className={classes.fabDelete}>
+                        <DeleteIcon aria-label="Delete" />
+                    </Fab>}
                 </div>
             );
         })
 
-        return posts
+        return posts;
     }
 
-    async(user, classes) {
-        const { openPostDialog } = this.props;
+    render() {
+        const { classes, appInterface, openDrawer, openPostDialog, closeDrawer, pages, auth } = this.props;
+        if(pages.userPage.user.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if(!pages.userPage.user.loading && !pages.userPage.user.data) return null;
         return (
             <div>
+                {/* {pages.userPage.user.loading && <div className={classes.loader}><CircularProgress /></div>} */}
+                {auth.refreshTokens.loading && <div className={classes.loader}><CircularProgress /></div>}
+                <AppBar title={pages.userPage.user.data && pages.userPage.user.data.name} openDrawer={openDrawer} />
+                <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer} />
+                <DeletePostDialog deletePost={this.deletePost} />
                 <div style={{ padding: 12, marginTop: 20 }}>
                     <Grid container spacing={24} justify="center">
                         <Grid item xl={2} lg={3} md={3} sm={5} xs={12}>
                             <Card>
                                 <CardMedia
-                                    style={{ width: '100%', minWidth: '100%',  height: '300px' }}
-                                    image={user.avatarUrl}
+                                    style={{ width: '100%', minWidth: '100%', height: '300px' }}
+                                    image={!!pages.userPage.user.data && pages.userPage.user.data.avatarUrl}
                                     title="Contemplative Reptile"
                                 />
+                                {console.log(pages.userPage.user.data)}
                                 <CardContent>
                                     <div className={classNames(classes.flex, classes.alignItemsCenter)}>
                                         <Typography gutterBottom variant="subtitle2" className={classes.userName}>
-                                            {`${user.name},`}
+                                            {`${pages.userPage.user.data && pages.userPage.user.data.name},`}
                                         </Typography>
                                         <Typography variant="body1" className={classes.userAge}>
-                                            {user.age || 'Возраст не указан'}
+                                            {(pages.userPage.user.data && pages.userPage.user.data.age) || 'Возраст не указан'}
                                         </Typography>
                                     </div>
                                     <Typography variant="body1" className={classes.userCity}>
-                                        {user.city || 'Город не указан'}
+                                        {(pages.userPage.user.data && pages.userPage.user.data.city) || 'Город не указан'}
                                     </Typography>
-                                </CardContent>
-                                <Divider light />
-                                <CardContent>
-                                    User friends is here
                                 </CardContent>
                             </Card>
                         </Grid>
                         <Grid item xl={8} lg={7} md={7} sm={5} xs={12} className={classNames(classes.alignItemsCenter, classes.flex, classes.flexColumn)}>
-                            {this.createPosts(user, classes)}
-                            {/* Add article button */}
+                            {pages.userPage.user.data && this.createPosts(pages.userPage.user.data, classes)}
                             {this.isPageOwner() && <Button onClick={openPostDialog} variant="contained" color="primary" className={classes.button}>
                                 Новый пост +
                             </Button>}
                         </Grid>
                     </Grid>
                 </div>
-            </div>
-        )
-    }
-
-    render() {
-        const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
-        return (
-            <div>
-            {/* hangle all request and use laoder*/}
-                {pages.userPage.user.loading && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-                
-                {auth.refreshTokens.loading && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-                
-                {pages.userPage.post.create.loading && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-                
-                {pages.userPage.post.delete.loading && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-
-                <AppBar title={pages.userPage.user.data && pages.userPage.user.data.name} openDrawer={openDrawer}/>
-				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
-                <DeletePostDialog deletePost={this.deletePost}/>
                 {this.postDialog()}
-                {pages.userPage.user.data && this.async(pages.userPage.user.data, classes)}
             </div>
         )
     }
@@ -302,18 +259,18 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     request: (url, method, params, headers, callback) => {
-		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE))
-		}
+        return (REQEST, SUCCESS, FAILURE) => {
+            return dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
+        }
     },
     refreshTokens: (refreshToken, callback) => {
-        dispatch(refreshTokens(refreshToken, callback));
+        return dispatch(refreshTokens(refreshToken, callback));
     },
     openDrawer: () => {
-		dispatch(openDrawer());
-	},
-	closeDrawer: () => {
-		dispatch(closeDrawer());
+        dispatch(openDrawer());
+    },
+    closeDrawer: () => {
+        dispatch(closeDrawer());
     },
     openPostDialog: () => {
         dispatch(openPostDialog());
@@ -330,8 +287,8 @@ const mapDispatchToProps = (dispatch) => ({
     setPostId: (id) => {
         dispatch(setPostId(id));
     },
-    redirectTo404: (id) => {
-        dispatch(push(`/${id}`));
+    redirectToNotFound: () => {
+        dispatch(push('/not-found'));
     }
 });
 

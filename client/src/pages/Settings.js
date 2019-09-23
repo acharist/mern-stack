@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-//Components
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import FormHelperText from '@material-ui/core/FormHelperText';
+// Styles
+import { styles } from '../assets/jss/styles';
 
-//Containers
-import AppBar from '../containers/AppBar';
-import AppDrawer from '../containers/AppDrawer';
+// Utils
+import isExpiredToken from '../utils/isExpiredToken';
+import getLocalState from '../utils/getLocalState';
+import getItem from '../utils/getItem';
 
-//Constants
+// Actions
+import refreshTokens from '../actions/refreshTokens';
+import closeDrawer from '../actions/closeDrawer';
+import openDrawer from '../actions/openDrawer';
+import request from '../actions/request';
+
+// Constants
 import UPDATE_INFO_REQUEST from '../constants/UPDATE_INFO_REQUEST';
 import UPDATE_INFO_SUCCESS from '../constants/UPDATE_INFO_SUCCESS';
 import UPDATE_INFO_FAILURE from '../constants/UPDATE_INFO_FAILURE';
@@ -29,26 +26,27 @@ import REFRESH_SESSION_DATA_REQUEST from '../constants/REFRESH_SESSION_DATA_REQU
 import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCCESS';
 import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
 
-//Actions
-import refreshTokens from '../actions/refreshTokens';
-import closeDrawer from '../actions/closeDrawer';
-import openDrawer from '../actions/openDrawer';
-import request from '../actions/request';
+// Higher-Order Components
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 
-//Icons
+// Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
+
+// Components
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Input from '@material-ui/core/Input';
+import Grid from '@material-ui/core/Grid';
+
+// Icons
 import CloudUpload from '@material-ui/icons/CloudUpload';
-
-//Styles
-import { styles } from '../assets/jss/styles';
-
-//Store
-import { store } from '../store/store';
-
-//Utils
-import saveStateToStorage from '../utils/saveStateToStorage';
-import isExpiredToken from '../utils/isExpiredToken';
-import getLocalState from '../utils/getLocalState';
-import getItem from '../utils/getItem';
 
 class Settings extends Component {
     constructor(props) {
@@ -79,55 +77,31 @@ class Settings extends Component {
         }
     }
 
-    sendAvatar() {
+    async sendAvatar() {
         const headers = { 'Content-Type': 'multipart/form-data' }
         const formData = new FormData();
         formData.append('avatar', this.avatarInput.current.files[0]);
-        if(isExpiredToken(this.accessToken)) {
-            this.props.refreshTokens(this.refreshToken, () => {
-                this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers }, () => {
-                    this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
-						saveStateToStorage(store.getState());
-						window.location.reload();
-					})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
-                })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
-            });
-        } else {
-            this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers }, () => {
-                this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
-					saveStateToStorage(store.getState());
-					window.location.reload();
-				})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
-            })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
         }
+        await this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        await this.props.request(`/api/user/${this._userId}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
-    sendInfo() {
+    async sendInfo() {
         const data = {
             name: this.state.name || '', 
             email: this.state.email || '',
             password: '' || '',
             age: this.state.age || '',
             city: this.state.city || ''
-		}
-		
-		if(isExpiredToken(this.accessToken)) {
-            this.props.refreshTokens(this.refreshToken, () => {
-                this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data, null, () => {
-					this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
-						saveStateToStorage(store.getState());
-						window.location.reload();
-					})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
-				})(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE)
-            });
-        } else {
-            this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data, null, () => {
-				this.props.request(`/api/user/${this._userId}`, 'get', null, null, () => {
-					saveStateToStorage(store.getState());
-					window.location.reload();
-				})(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
-			})(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE)
         }
+        
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
+        }
+        await this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data)(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE);
+        await this.props.request(`/api/user/${this._userId}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
     render() {
@@ -245,7 +219,7 @@ const mapDispatchToProps = (dispatch) => ({
 		}
     },
     refreshTokens: (refreshToken, callback) => {
-        dispatch(refreshTokens(refreshToken, callback));
+        return dispatch(refreshTokens(refreshToken, callback));
     },
 	openDrawer: () => {
 		dispatch(openDrawer());

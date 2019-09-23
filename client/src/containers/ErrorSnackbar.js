@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+
+// Styles
+import { styles } from '../assets/jss/styles';
 import { withStyles } from '@material-ui/core/styles';
+
+// Actions
+import openErrorSnackbar from '../actions/openErrorSnackbar';
+import closeErrorSnackbar from '../actions/closeErrorSnackbar';
+
+// Higher-Order Components
+import { connect } from 'react-redux';
+
+// Components
 import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
-
-import { styles } from '../assets/jss/styles';
-import { connect } from 'react-redux';
-
-//Actions
-import openErrorSnackbar from '../actions/openErrorSnackbar';
-import closeErrorSnackbar from '../actions/closeErrorSnackbar';
 
 class ErrorSnackbar extends Component {
     render() {

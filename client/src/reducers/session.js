@@ -1,4 +1,4 @@
-//constants
+// Constants
 import DISABLE_SESSION from '../constants/DISABLE_SESSION';
 import SET_USER_DATA from '../constants/SET_USER_DATA';
 import LOGOUT from '../constants/LOGOUT';

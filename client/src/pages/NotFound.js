@@ -1,17 +1,19 @@
-import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
+
+// Styles
+import { styles } from '../assets/jss/styles';
+
+// Higher-Order Components
 import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 
-//Constants
-import AppBar from '../containers/AppBar';
-import AppDrawer from '../containers/AppDrawer';
-
-//Actions
+// Actions
 import openDrawer from '../actions/openDrawer';
 import closeDrawer from '../actions/closeDrawer';
 
-//Styles
-import { styles } from '../assets/jss/styles';
+// Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
 
 class NotFound extends Component {
     render() {

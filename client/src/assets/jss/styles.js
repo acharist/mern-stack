@@ -76,7 +76,6 @@ export const styles = theme => ({
     xlMargin: {
         margin: '30px'
     },
-
     loader: {
         position: 'fixed',
         top: '50%',
@@ -217,5 +216,8 @@ export const styles = theme => ({
     },
     personalInfoTextField: {
         width: '100%'
+    },
+    cursorPointer: {
+        cursor: 'pointer'
     }
 });

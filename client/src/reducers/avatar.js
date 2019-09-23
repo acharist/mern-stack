@@ -1,4 +1,4 @@
-//Constants
+// Constants
 import UPDATE_AVATAR_REQUEST from '../constants/UPDATE_AVATAR_REQUEST';
 import UPDATE_AVATAR_SUCCESS from '../constants/UPDATE_AVATAR_SUCCESS';
 import UPDATE_AVATAR_FAILURE from '../constants/UPDATE_AVATAR_FAILURE';

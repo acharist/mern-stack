@@ -5,8 +5,7 @@ import SIGNIN_USER_FAILURE from '../constants/SIGNIN_USER_FAILURE';
 import { store } from '../store/store';
 
 import axios from 'axios';
-import saveTokenToStorage from '../utils/saveTokenToStorage';
-import saveStateToStorage from '../utils/saveStateToStorage';
+import saveLocal from '../utils/saveLocal';
 import { push } from 'connected-react-router';
 
 import setUserData from './setUserData';
@@ -20,17 +19,14 @@ export default (email, password) => {
             password
         })
         .then((data) => {
-            const { accessToken, refreshToken } = data.data;
-
-            saveTokenToStorage('access-token', accessToken);
-            saveTokenToStorage('refresh-token', refreshToken);
-            
-            
+            const { accessToken, refreshToken } = data.data;        
+            saveLocal('access-token', `Bearer ${accessToken}`);
+            saveLocal('access-token', `Bearer ${refreshToken}`);
             dispach({ type: SIGNIN_USER_SUCCESS });
             dispach(setUserData(data.data.data));
+            saveLocal('id', data.data.data._id);
             
-            //After successfully changing the state, save its local copy
-            saveStateToStorage(store.getState());
+            saveLocal('state', store.getState(), true);
             dispach(push('/'));
         })
         .catch(err => { 

@@ -1,4 +1,4 @@
-//Constants
+// Constants
 import CREATE_POST_REQUEST from '../constants/CREATE_POST_REQUEST';
 import CREATE_POST_SUCCESS from '../constants/CREATE_POST_SUCCESS';
 import CREATE_POST_FAILURE from '../constants/CREATE_POST_FAILURE';

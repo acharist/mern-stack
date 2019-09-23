@@ -1,4 +1,4 @@
-//constants
+// Constants
 import UPDATE_INFO_REQUEST from '../constants/UPDATE_INFO_REQUEST';
 import UPDATE_INFO_SUCCESS from '../constants/UPDATE_INFO_SUCCESS';
 import UPDATE_INFO_FAILURE from '../constants/UPDATE_INFO_FAILURE';

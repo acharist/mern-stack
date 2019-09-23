@@ -1,4 +1,4 @@
-//constants
+// Constants
 import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
 import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
 import GET_USER_FAILURE from '../constants/GET_USER_FAILURE';

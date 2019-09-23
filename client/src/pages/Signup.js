@@ -1,9 +1,25 @@
-import { withStyles } from '@material-ui/core/styles';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-//Components
+//Styles
+import { styles } from '../assets/jss/styles';
+
+// Higher-Order Components
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+
+//Actions
+import openErrorSnackbar from '../actions/openErrorSnackbar';
+import closeDrawer from '../actions/closeDrawer';
+import openDrawer from '../actions/openDrawer';
+import signup from '../actions/signup';
+
+// Containers
+import AppBar from '../containers/AppBar';
+import AppDrawer from '../containers/AppDrawer';
+import ErrorSnackbar from '../containers/ErrorSnackbar';
+
+// Components
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
@@ -11,20 +27,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Input from '@material-ui/core/Input';
-
-//Containers
-import AppBar from '../containers/AppBar';
-import AppDrawer from '../containers/AppDrawer';
-import ErrorSnackbar from '../containers/ErrorSnackbar';
-
-//Styles
-import { styles } from '../assets/jss/styles';
-
-//Actions
-import openErrorSnackbar from '../actions/openErrorSnackbar';
-import closeDrawer from '../actions/closeDrawer';
-import openDrawer from '../actions/openDrawer';
-import signup from '../actions/signup';
 
 class Signup extends Component {
     constructor(props) {

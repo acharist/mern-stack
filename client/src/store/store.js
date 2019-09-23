@@ -8,9 +8,9 @@ import rootReducer from '../reducers/index';
 const history = createBrowserHistory();
 
 const store = createStore(
-    connectRouter(history)(rootReducer), //Connect roote reducer and history
+    connectRouter(history)(rootReducer), // Connect roote reducer and history
     composeWithDevTools(
-        applyMiddleware( //Compose several middlewares
+        applyMiddleware( // Compose several middlewares
             thunk,
             routerMiddleware(history)
         ),

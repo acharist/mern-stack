@@ -1,4 +1,4 @@
-//Constants
+// Constants
 import DELETE_POST_REQUEST from '../constants/DELETE_POST_REQUEST';
 import DELETE_POST_SUCCESS from '../constants/DELETE_POST_SUCCESS';
 import DELETE_POST_FAILURE from '../constants/DELETE_POST_FAILURE';

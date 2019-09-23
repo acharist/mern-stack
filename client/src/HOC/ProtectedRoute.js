@@ -1,31 +1,34 @@
 import React, { Component } from 'react';
-import { push } from 'connected-react-router';
-import { connect } from 'react-redux';
-
-//Styles
-import { styles } from '../assets/jss/styles';
-import { withStyles } from '@material-ui/core/styles';
-
-//Utils
-import isExpiredToken from '../utils/isExpiredToken';
-import getLocalState from '../utils/getLocalState';
-import getItem from '../utils/getItem';
 import jwtDecode from 'jwt-decode';
 
-//Actions
-import CircularProgress from '@material-ui/core/CircularProgress';
+// Actions
+import { push } from 'connected-react-router';
 import refreshTokens from '../actions/refreshTokens';
 import setUserData from '../actions/setUserData';
 import logOut from '../actions/logOut';
 
-//Constants
+// Constants
 import RESET_REFRESHED from '../constants/RESET_REFRESHED';
+
+// Utils
+import isExpiredToken from '../utils/isExpiredToken';
+import getLocalState from '../utils/getLocalState';
+import getItem from '../utils/getItem';
+
+// Styles
+import { styles } from '../assets/jss/styles';
+
+// Higher-Order Components
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
+
+// Components
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function (WrappedComponent) {
     class ProtectRoute extends Component {
         constructor(props) {
             super(props);
-
             this._check = this._check.bind(this);
             this._logOut = this._logOut.bind(this);
             this._checkForLocalState = this._checkForLocalState.bind(this);
@@ -46,17 +49,16 @@ export default function (WrappedComponent) {
 
         _checkForTokensRefresh() {
             if (this._check()) { // If local state and tokens are whole
-                // const { decodedAccessToken, decodedRefreshToken } = this._getDecodedLocalTokens();
                 const accessToken = getItem('access-token');
-                const refreshToken = getItem('refresh-token');
+                const refreshToken = getItem('refresh-token');  
                 if (isExpiredToken(accessToken)) {
                     if (isExpiredToken(refreshToken)) {
-                        return false; //Both tokens are expired, need to logIn again 
+                        return false; // Both tokens are expired, need to logIn again 
                     } else {
-                        return true; //Tht's the case when need to send request for new tokens
+                        return true; // That's the case when need to send request for new tokens
                     }
                 } else {
-                    return false; //Everything OK, still can use access token
+                    return false; // Everything OK, still can use access token
                 }
             } else {
                 return false;
@@ -64,7 +66,7 @@ export default function (WrappedComponent) {
         }
 
         _refreshTokens() {
-            if (this._checkForTokensRefresh()) { // Check if need to send request for refresh tokens
+            if (this._checkForTokensRefresh()) { // Validation for sending a request for updating tokens
                 // Need to use api request for getting new tokes
                 const refreshToken = getItem('refresh-token');
                 this.props.refreshTokens(refreshToken);
@@ -110,7 +112,6 @@ export default function (WrappedComponent) {
 
         render() {
             const { auth, classes } = this.props;
-
             if(this._check()) {
                 if(this._checkForTokensRefresh()) {
                     if(auth.refreshTokens.loading) {

@@ -1,9 +1,9 @@
 {
-  "name": "MERN-stack",
+  "name": "mern-stack",
   "version": "1.0.0",
   "description": "Web application using MERN stack",
   "main": "server.js",
-  "author": "Cyrus Acharist",
+  "author": "acharist",
   "license": "MIT",
   "scripts": {
     "client-install": "npm install --prefix client",

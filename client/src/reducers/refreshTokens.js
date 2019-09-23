@@ -1,4 +1,4 @@
-//constants
+// Constants
 import REFRESH_TOKENS_REQUEST from '../constants/REFRESH_TOKENS_REQUEST';
 import REFRESH_TOKENS_SUCCESS from '../constants/REFRESH_TOKENS_SUCCESS';
 import REFRESH_TOKENS_FAILURE from '../constants/REFRESH_TOKENS_FAILURE';

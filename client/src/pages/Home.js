@@ -4,6 +4,10 @@ import classNames from 'classnames';
 //Styles
 import { styles } from '../assets/jss/styles';
 
+// Utils
+import getLocal from '../utils/getLocal';
+import isExpiredToken from '../utils/isExpiredToken';
+
 // Higher-Order Components
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -42,9 +46,14 @@ class Home extends Component {
 		super(props);	
 		this.showUsers = this.showUsers.bind(this);
 		this.changeLocation = this.changeLocation.bind(this);
+		this.accessToken = getLocal('access-token');
+        this.refreshToken = getLocal('refresh-token');
 	}
 
-	async componentWillMount() {
+	async componentDidMount() {
+		if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
+        }
 		await this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
 	}
 
@@ -104,7 +113,9 @@ class Home extends Component {
 	}
 
 	render() {
-		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
+		if (pages.homePage.loading || auth.refreshTokens.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (!(pages.homePage.loading && auth.refreshTokens.loading) && !pages.homePage.data) return null;
 		return (
 			<div className="Home">
 				{pages.homePage.loading && <div className={classes.loader}>
@@ -124,7 +135,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
-	pages: state.pages
+	pages: state.pages,
+	auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({

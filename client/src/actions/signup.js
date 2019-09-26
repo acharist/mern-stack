@@ -8,7 +8,7 @@ import axios from 'axios';
 import { push } from 'connected-react-router';
 
 import setUserData from './setUserData';
-import saveLocal from '../utils/saveLocal';
+import setLocal from '../utils/setLocal';
 
 export default (name, email, password) => {
     return (dispach) => {
@@ -21,14 +21,14 @@ export default (name, email, password) => {
         })
         .then((data) => {
             const { accessToken, refreshToken } = data.data;
-            saveLocal('access-token', `Bearer ${accessToken}`);
-            saveLocal('access-token', `Bearer ${refreshToken}`);
+            setLocal('access-token', `Bearer ${accessToken}`);
+            setLocal('access-token', `Bearer ${refreshToken}`);
 
             dispach({ type: SIGNUP_USER_SUCCESS });
             dispach(setUserData(data.data.data));
-            saveLocal('id', data.data.data._id);
+            setLocal('id', data.data.data._id);
             
-            saveLocal('state', store.getState(), true);
+            setLocal('state', store.getState(), true);
             dispach(push('/'));
         })
         .catch(err => {

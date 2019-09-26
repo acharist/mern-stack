@@ -4,7 +4,6 @@ import jwtDecode from 'jwt-decode';
 // Actions
 import { push } from 'connected-react-router';
 import refreshTokens from '../actions/refreshTokens';
-import setUserData from '../actions/setUserData';
 import logOut from '../actions/logOut';
 
 // Constants
@@ -13,7 +12,7 @@ import RESET_REFRESHED from '../constants/RESET_REFRESHED';
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
 import getLocalState from '../utils/getLocalState';
-import getItem from '../utils/getItem';
+import getLocal from '../utils/getLocal';
 
 // Styles
 import { styles } from '../assets/jss/styles';
@@ -49,8 +48,8 @@ export default function (WrappedComponent) {
 
         _checkForTokensRefresh() {
             if (this._check()) { // If local state and tokens are whole
-                const accessToken = getItem('access-token');
-                const refreshToken = getItem('refresh-token');  
+                const accessToken = getLocal('access-token');
+                const refreshToken = getLocal('refresh-token');  
                 if (isExpiredToken(accessToken)) {
                     if (isExpiredToken(refreshToken)) {
                         return false; // Both tokens are expired, need to logIn again 
@@ -68,7 +67,7 @@ export default function (WrappedComponent) {
         _refreshTokens() {
             if (this._checkForTokensRefresh()) { // Validation for sending a request for updating tokens
                 // Need to use api request for getting new tokes
-                const refreshToken = getItem('refresh-token');
+                const refreshToken = getLocal('refresh-token');
                 this.props.refreshTokens(refreshToken);
             }
         }
@@ -84,8 +83,8 @@ export default function (WrappedComponent) {
 
         _getDecodedLocalTokens() { // Check if tokens are consists in local storage
             try {
-                const accessToken = getItem('access-token');
-                const refreshToken = getItem('refresh-token');
+                const accessToken = getLocal('access-token');
+                const refreshToken = getLocal('refresh-token');
 
                 const pureAccessToken = accessToken.split(' ')[1];
                 const pureRefreshToken = refreshToken.split(' ')[1];
@@ -139,9 +138,6 @@ export default function (WrappedComponent) {
     const mapDispatchToProps = (dispatch) => ({
         refreshTokens: (refreshToken) => {
             dispatch(refreshTokens(refreshToken));
-        },
-        setUserData: (data) => {
-            dispatch(setUserData(data));
         },
         resetRefreshed: () => {
             dispatch({ type: RESET_REFRESHED });

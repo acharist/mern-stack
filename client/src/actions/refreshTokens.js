@@ -1,5 +1,5 @@
 import axios from 'axios';
-import saveLocal from '../utils/saveLocal';
+import setLocal from '../utils/setLocal';
 import { push } from 'connected-react-router';
 import logOut from '../actions/logOut';
 
@@ -20,8 +20,8 @@ export default (refreshToken) => { //requestWait is an array and there is other 
         return axios(options)
             .then((res) => {
                 const { accessToken, refreshToken } = res.data;
-                saveLocal('access-token', `Bearer ${accessToken}`);
-                saveLocal('access-token', `Bearer ${refreshToken}`);
+                setLocal('access-token', `Bearer ${accessToken}`);
+                setLocal('access-token', `Bearer ${refreshToken}`);
                 dispach({ type: REFRESH_TOKENS_SUCCESS });
             })
             .catch((err) => {

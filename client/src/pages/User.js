@@ -7,7 +7,7 @@ import { styles } from '../assets/jss/styles';
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
 import getLocalState from '../utils/getLocalState';
-import getItem from '../utils/getItem';
+import getLocal from '../utils/getLocal';
 
 // Higher-Order Components
 import { connect } from 'react-redux';
@@ -68,7 +68,7 @@ class User extends Component {
             title: '',
             content: '',
         }
-        this.createPosts = this.createPosts.bind(this);
+        this.showPosts = this.showPosts.bind(this);
         this.postDialog = this.postDialog.bind(this);
         this.sendPost = this.sendPost.bind(this);
         this.deletePost = this.deletePost.bind(this);
@@ -76,8 +76,8 @@ class User extends Component {
         this.handleContentChange = this.handleContentChange.bind(this);
         this.isPageOwner = this.isPageOwner.bind(this);
 
-        this.accessToken = getItem('access-token');
-        this.refreshToken = getItem('refresh-token');
+        this.accessToken = getLocal('access-token');
+        this.refreshToken = getLocal('refresh-token');
     }
 
     async componentDidMount() {
@@ -175,7 +175,7 @@ class User extends Component {
         )
     }
 
-    createPosts(user, classes) {
+    showPosts(user, classes) {
         const posts = [];
         const { openDeletePostDialog, setPostId } = this.props;
         user.articles.forEach((post) => {
@@ -203,12 +203,10 @@ class User extends Component {
 
     render() {
         const { classes, appInterface, openDrawer, openPostDialog, closeDrawer, pages, auth } = this.props;
-        if(pages.userPage.user.loading) return <div className={classes.loader}><CircularProgress /></div>
-        if(!pages.userPage.user.loading && !pages.userPage.user.data) return null;
+        if (pages.userPage.user.loading || auth.refreshTokens.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (!(pages.userPage.user.loading && auth.refreshTokens.loading) && !pages.userPage.user.data) return null;
         return (
             <div>
-                {/* {pages.userPage.user.loading && <div className={classes.loader}><CircularProgress /></div>} */}
-                {auth.refreshTokens.loading && <div className={classes.loader}><CircularProgress /></div>}
                 <AppBar title={pages.userPage.user.data && pages.userPage.user.data.name} openDrawer={openDrawer} />
                 <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer} />
                 <DeletePostDialog deletePost={this.deletePost} />
@@ -221,7 +219,6 @@ class User extends Component {
                                     image={!!pages.userPage.user.data && pages.userPage.user.data.avatarUrl}
                                     title="Contemplative Reptile"
                                 />
-                                {console.log(pages.userPage.user.data)}
                                 <CardContent>
                                     <div className={classNames(classes.flex, classes.alignItemsCenter)}>
                                         <Typography gutterBottom variant="subtitle2" className={classes.userName}>
@@ -238,7 +235,7 @@ class User extends Component {
                             </Card>
                         </Grid>
                         <Grid item xl={8} lg={7} md={7} sm={5} xs={12} className={classNames(classes.alignItemsCenter, classes.flex, classes.flexColumn)}>
-                            {pages.userPage.user.data && this.createPosts(pages.userPage.user.data, classes)}
+                            {pages.userPage.user.data && this.showPosts(pages.userPage.user.data, classes)}
                             {this.isPageOwner() && <Button onClick={openPostDialog} variant="contained" color="primary" className={classes.button}>
                                 Новый пост +
                             </Button>}

@@ -5,7 +5,7 @@ import SIGNIN_USER_FAILURE from '../constants/SIGNIN_USER_FAILURE';
 import { store } from '../store/store';
 
 import axios from 'axios';
-import saveLocal from '../utils/saveLocal';
+import setLocal from '../utils/setLocal';
 import { push } from 'connected-react-router';
 
 import setUserData from './setUserData';
@@ -20,13 +20,13 @@ export default (email, password) => {
         })
         .then((data) => {
             const { accessToken, refreshToken } = data.data;        
-            saveLocal('access-token', `Bearer ${accessToken}`);
-            saveLocal('access-token', `Bearer ${refreshToken}`);
+            setLocal('access-token', `Bearer ${accessToken}`);
+            setLocal('access-token', `Bearer ${refreshToken}`);
             dispach({ type: SIGNIN_USER_SUCCESS });
             dispach(setUserData(data.data.data));
-            saveLocal('id', data.data.data._id);
+            setLocal('id', data.data.data._id);
             
-            saveLocal('state', store.getState(), true);
+            setLocal('state', store.getState(), true);
             dispach(push('/'));
         })
         .catch(err => { 

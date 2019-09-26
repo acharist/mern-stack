@@ -1,14 +1,14 @@
 import SET_USER_DATA from '../constants/SET_USER_DATA';
-import getItem from '../utils/getItem';
+import getLocal from '../utils/getLocal';
 
 export default (data) => {
     return (dispatch) => {
         const cachedData = {
-            avatarUrl: getItem('avatarUrl'),
-            articles: getItem('articles'),
-            _id: getItem('_id'),
-            name: getItem('name'),
-            email: getItem('email')
+            avatarUrl: getLocal('avatarUrl'),
+            articles: getLocal('articles'),
+            _id: getLocal('_id'),
+            name: getLocal('name'),
+            email: getLocal('email')
         }
         dispatch({
             type: SET_USER_DATA,

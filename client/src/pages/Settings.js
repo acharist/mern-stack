@@ -7,7 +7,7 @@ import { styles } from '../assets/jss/styles';
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
 import getLocalState from '../utils/getLocalState';
-import getItem from '../utils/getItem';
+import getLocal from '../utils/getLocal';
 
 // Actions
 import refreshTokens from '../actions/refreshTokens';
@@ -64,11 +64,17 @@ class Settings extends Component {
         this.sendAvatar = this.sendAvatar.bind(this);
         this.sendInfo = this.sendInfo.bind(this);
 
-        this.accessToken = getItem('access-token');
-        this.refreshToken = getItem('refresh-token');
+        this.accessToken = getLocal('access-token');
+        this.refreshToken = getLocal('refresh-token');
         this._userId = this.localState.auth.session.user.data._id;
 
         this.avatarInput = React.createRef();
+    }
+
+    async componentDidMount() {
+        if (isExpiredToken(this.accessToken)) {
+            await this.props.refreshTokens(this.refreshToken);
+        }
     }
 
     handleInfoChange(event) {
@@ -107,12 +113,10 @@ class Settings extends Component {
     render() {
         const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
         const message = pages.settingsPage.data.errorData && pages.settingsPage.data.errorData.message;
+        if (pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (!(pages.settingsPage.data.loading) && !(pages.settingsPage.data.data)) return null;
         return (
             <div>
-                {(pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading) && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-
                 <AppBar title="Настройки" openDrawer={openDrawer}/>
                 <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 

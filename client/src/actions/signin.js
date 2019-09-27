@@ -14,19 +14,18 @@ export default (email, password) => {
     return (dispach) => {
         dispach({ type: SIGNIN_USER_REQUEST });
 
-        axios.post('/api/auth/signin', {
+        return axios.post('/api/auth/signin', {
             email,
             password
         })
         .then((data) => {
             const { accessToken, refreshToken } = data.data;        
             setLocal('access-token', `Bearer ${accessToken}`);
-            setLocal('access-token', `Bearer ${refreshToken}`);
+            setLocal('refresh-token', `Bearer ${refreshToken}`);
             dispach({ type: SIGNIN_USER_SUCCESS });
             dispach(setUserData(data.data.data));
             setLocal('id', data.data.data._id);
-            
-            setLocal('state', store.getState(), true);
+            setLocal('state', JSON.stringify(store.getState()), true);
             dispach(push('/'));
         })
         .catch(err => { 

@@ -6,11 +6,13 @@ import { styles } from '../assets/jss/styles';
 
 // Utils
 import getLocalState from '../utils/getLocalState';
+import getLocal from '../utils/getLocal';
 
 // Actions
-import { push } from 'connected-react-router';
-import openTopMenu from '../actions/openTopMenu';
+import refreshTokens from '../actions/refreshTokens';
 import closeTopMenu from '../actions/closeTopMenu';
+import openTopMenu from '../actions/openTopMenu';
+import { push } from 'connected-react-router';
 import request from '../actions/request';
 
 // Constants
@@ -49,10 +51,10 @@ class ButtonAppBar extends Component {
 		this.changeLocation = this.changeLocation.bind(this);
     }
 
-    changeLocation() {
+    async changeLocation() {
         this.props.closeTopMenu();
         this.props.changeLocation(this.localState.auth.session.user.data._id);
-        this.props.request(`/api/user/${this.localState.auth.session.user.data._id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+        await this.props.request(`/api/user/${getLocal('id')}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
     }
 
     render() {
@@ -120,11 +122,14 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    request: (url, method) => {
-		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(request(url, method)(REQEST, SUCCESS, FAILURE))
-		}
-	},
+    request: (url, method, params, headers, callback) => {
+        return (REQEST, SUCCESS, FAILURE) => {
+            return dispatch(request(url, method, params, headers)(REQEST, SUCCESS, FAILURE));
+        }
+    },
+    refreshTokens: (refreshToken, callback) => {
+        return dispatch(refreshTokens(refreshToken, callback));
+    },
     openTopMenu: () => {
         dispatch(openTopMenu());
     },

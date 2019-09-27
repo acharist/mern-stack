@@ -71,12 +71,6 @@ class Settings extends Component {
         this.avatarInput = React.createRef();
     }
 
-    async componentDidMount() {
-        if (isExpiredToken(this.accessToken)) {
-            await this.props.refreshTokens(this.refreshToken);
-        }
-    }
-
     handleInfoChange(event) {
         return (type) => {
             this.setState({[type]: event.target.value});
@@ -111,10 +105,9 @@ class Settings extends Component {
     }
 
     render() {
-        const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
+        const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
         const message = pages.settingsPage.data.errorData && pages.settingsPage.data.errorData.message;
-        if (pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.refreshTokens.loading) return <div className={classes.loader}><CircularProgress /></div>
-        if (!(pages.settingsPage.data.loading) && !(pages.settingsPage.data.data)) return null;
+        if (pages.settingsPage.avatar.loading || pages.settingsPage.data.loading) return <div className={classes.loader}><CircularProgress /></div>
         return (
             <div>
                 <AppBar title="Настройки" openDrawer={openDrawer}/>
@@ -212,7 +205,6 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
-    auth: state.auth,
     pages: state.pages
 });
 

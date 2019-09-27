@@ -35,7 +35,7 @@ export default function (WrappedComponent) {
             this._checkForTokensRefresh = this._checkForTokensRefresh.bind(this);
         }
 
-        componentWillMount() {
+        componentDidMount() {
             this._refreshTokens();
             this._logOut();
         }
@@ -73,11 +73,10 @@ export default function (WrappedComponent) {
         }
 
         _checkForLocalState() {
-            const localState = getLocalState();
-            if (localState === undefined) {
+            try {
+                return !!JSON.parse(getLocal('state'));
+            } catch(err) {
                 return false;
-            } else {
-                return true;
             }
         }
 
@@ -85,10 +84,9 @@ export default function (WrappedComponent) {
             try {
                 const accessToken = getLocal('access-token');
                 const refreshToken = getLocal('refresh-token');
-
                 const pureAccessToken = accessToken.split(' ')[1];
                 const pureRefreshToken = refreshToken.split(' ')[1];
-
+                
                 const decodedAccessToken = jwtDecode(pureAccessToken);
                 const decodedRefreshToken = jwtDecode(pureRefreshToken);
 

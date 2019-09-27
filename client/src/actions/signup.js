@@ -14,7 +14,7 @@ export default (name, email, password) => {
     return (dispach) => {
         dispach({ type: SIGNUP_USER_REQUEST });
 
-        axios.post('/api/auth/signup', {
+        return axios.post('/api/auth/signup', {
             name,
             email,
             password
@@ -22,13 +22,11 @@ export default (name, email, password) => {
         .then((data) => {
             const { accessToken, refreshToken } = data.data;
             setLocal('access-token', `Bearer ${accessToken}`);
-            setLocal('access-token', `Bearer ${refreshToken}`);
-
+            setLocal('refresh-token', `Bearer ${refreshToken}`);
             dispach({ type: SIGNUP_USER_SUCCESS });
             dispach(setUserData(data.data.data));
-            setLocal('id', data.data.data._id);
-            
-            setLocal('state', store.getState(), true);
+            setLocal('id', data.data.data._id);  
+            setLocal('state', JSON.stringify(store.getState()), true);
             dispach(push('/'));
         })
         .catch(err => {

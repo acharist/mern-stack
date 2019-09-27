@@ -18,6 +18,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 
+import closeDrawer from '../actions/closeDrawer';
+
 // Icons
 import Home from '@material-ui/icons/Home';
 
@@ -55,6 +57,8 @@ AppDrawer.propTypes = {
 
 const mapDispatchToProps = (dispatch) => ({
     redirectToHome: () => {
+        // Close drawer before redirect
+        dispatch(closeDrawer());
         dispatch(push('/'));
     }
 });

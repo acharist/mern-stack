@@ -61,25 +61,19 @@ class Signin extends Component {
         });
     }
 
-    sendData() {
-        this.props.authUser(this.state.email, this.state.password);
+    async sendData() {
+        await this.props.authUser(this.state.email, this.state.password);
     }
     
     render() {
         const { classes, auth, appInterface, closeDrawer, openDrawer } = this.props;
         const message = auth.signin.errorData && auth.signin.errorData.formMessage;
         const status = auth.signin.errorData && auth.signin.errorData.status;
-
+        if(auth.signin.loading) return <div className={classes.loader}><CircularProgress/> </div>
         return (
             <div>
                 <div> 
                     <ErrorSnackbar/>
-                    {/* {(status >= 500 && !appInterface.isErrorSnackbarOpen) &&  openErrorSnackbar()} */}
-                    
-                    {signin.loading && <div className={classes.loader}>
-                        <CircularProgress/>
-                    </div>}
-
                     <AppBar title="Вход" openDrawer={openDrawer}/>
 				    <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 

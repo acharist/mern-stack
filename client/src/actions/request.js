@@ -18,30 +18,3 @@ export default (url, method, params, headers) => {
         }
     }
 }
-
-// .then((res) => {
-//     if(callbacks.succsess) {
-//         callbacks.succsess();
-//     }
-// })
-// .catch((err) => {
-//     if(typeof callbacks === 'object' && (callbacks.failure && isFuncrion(callbacks.succsess))) {
-//         callbacks.failure();
-//     }
-// });
-
-// import axios from 'axios';
-// import getItem from '../utils/getItem';
-
-// export default (url, method, params, headers) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const accessToken = getItem('access-token');
-//             axios.defaults.headers.common['authorization'] = accessToken;
-//             const response = await axios[method](url, params, headers);
-//             resolve(response);
-//         } catch (error) {
-//             reject(error);
-//         }
-//     });
-// }

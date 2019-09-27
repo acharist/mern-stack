@@ -69,8 +69,8 @@ class Signup extends Component {
         });
     }
 
-    sendData() {
-        this.props.authUser(this.state.name, this.state.email, this.state.password);
+    async sendData() {
+        await this.props.authUser(this.state.name, this.state.email, this.state.password);
     }
     
     render() {

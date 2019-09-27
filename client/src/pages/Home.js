@@ -51,9 +51,6 @@ class Home extends Component {
 	}
 
 	async componentDidMount() {
-		if (isExpiredToken(this.accessToken)) {
-            await this.props.refreshTokens(this.refreshToken);
-        }
 		await this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
 	}
 
@@ -113,15 +110,11 @@ class Home extends Component {
 	}
 
 	render() {
-		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
-		if (pages.homePage.loading || auth.refreshTokens.loading) return <div className={classes.loader}><CircularProgress /></div>
-        if (!(pages.homePage.loading && auth.refreshTokens.loading) && !pages.homePage.data) return null;
+		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+		if (pages.homePage.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (!pages.homePage.loading && !pages.homePage.data) return null;
 		return (
 			<div className="Home">
-				{pages.homePage.loading && <div className={classes.loader}>
-                    <CircularProgress/>
-                </div>}
-				
 				<AppBar title="Главная" openDrawer={openDrawer}/>
 				<AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
@@ -142,7 +135,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	request: (url, method, params, headers, callback) => {
         return (REQEST, SUCCESS, FAILURE) => {
-            return dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE));
+            return dispatch(request(url, method, params, headers)(REQEST, SUCCESS, FAILURE));
         }
     },
 	openDrawer: () => {

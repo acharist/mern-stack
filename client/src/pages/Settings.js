@@ -66,9 +66,15 @@ class Settings extends Component {
 
         this.accessToken = getLocal('access-token');
         this.refreshToken = getLocal('refresh-token');
-        this._userId = this.localState.auth.session.user.data._id;
+        this._id = getLocal('id');
 
         this.avatarInput = React.createRef();
+    }
+
+    async componentDidMount() {
+        if(!this.props.auth.session.user.data) {
+			await this.props.request(`/api/user/${this._id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+		}
     }
 
     handleInfoChange(event) {
@@ -84,8 +90,8 @@ class Settings extends Component {
         if (isExpiredToken(this.accessToken)) {
             await this.props.refreshTokens(this.refreshToken);
         }
-        await this.props.request(`/api/user/${this._userId}/settings/avatar`, 'post', formData, { headers })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
-        await this.props.request(`/api/user/${this._userId}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+        await this.props.request(`/api/user/${this.id}/settings/avatar`, 'post', formData, { headers })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        await this.props.request(`/api/user/${this.id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
     async sendInfo() {
@@ -100,14 +106,15 @@ class Settings extends Component {
         if (isExpiredToken(this.accessToken)) {
             await this.props.refreshTokens(this.refreshToken);
         }
-        await this.props.request(`/api/user/${this._userId}/settings/common`, 'post', data)(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE);
-        await this.props.request(`/api/user/${this._userId}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+        await this.props.request(`/api/user/${this.id}/settings/common`, 'post', data)(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE);
+        await this.props.request(`/api/user/${this.id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
     render() {
-        const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
+        const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
         const message = pages.settingsPage.data.errorData && pages.settingsPage.data.errorData.message;
-        if (pages.settingsPage.avatar.loading || pages.settingsPage.data.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (pages.settingsPage.avatar.loading || pages.settingsPage.data.loading || auth.session.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if (!auth.session.loading && !auth.session.user.data) return null;
         return (
             <div>
                 <AppBar title="Настройки" openDrawer={openDrawer}/>
@@ -205,7 +212,8 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => ({
 	appInterface: state.appInterface,
-    pages: state.pages
+    pages: state.pages,
+    auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({

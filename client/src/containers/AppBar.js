@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import { styles } from '../assets/jss/styles';
 
 // Utils
-import getLocalState from '../utils/getLocalState';
 import getLocal from '../utils/getLocal';
 
 // Actions
@@ -44,7 +43,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 class ButtonAppBar extends Component {
     constructor(props) {
         super(props);
-        this.localState = getLocalState();
         this.state = {
             anchorEl: null
         }
@@ -52,9 +50,10 @@ class ButtonAppBar extends Component {
     }
 
     async changeLocation() {
+        const id = getLocal('id');
         this.props.closeTopMenu();
-        this.props.changeLocation(this.localState.auth.session.user.data._id);
-        await this.props.request(`/api/user/${getLocal('id')}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
+        this.props.changeLocation(id);
+        await this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
     }
 
     render() {
@@ -63,7 +62,6 @@ class ButtonAppBar extends Component {
             redirectToSignin, redirectToSignup,
              appInterface } = this.props;
 
-        const localState = getLocalState();
         const authButtons = (
             <div>
                 <Button color="inherit" onClick={redirectToSignin}>Вход</Button>
@@ -78,14 +76,14 @@ class ButtonAppBar extends Component {
                   buttonRef={node => {
                     this.anchorEl = node;
                   }}>
-                <Avatar className={classes.avatar} alt="User" src={localState && auth.session.user.data.avatarUrl} />
+                <Avatar className={classes.avatar} alt="User" src={auth.session.user.data.avatarUrl} />
                 </IconButton>
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
-                                <TopMenu userName={localState && auth.session.user.data.name} userEmail={localState && auth.session.user.data.email}>
-                                    <Avatar className={classes.cursorPointer} alt="User" src={localState && auth.session.user.data.avatarUrl} onClick={this.changeLocation}/>
+                                <TopMenu userName={auth.session.user.data.name} userEmail={auth.session.user.data.email}>
+                                    <Avatar className={classes.cursorPointer} alt="User" src={auth.session.user.data.avatarUrl} onClick={this.changeLocation}/>
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -104,7 +102,7 @@ class ButtonAppBar extends Component {
                         <Typography variant="h6" color="inherit" className={classes.grow}>
                             {title}
                         </Typography>
-                        {localState && localState.auth.session.isAuthenticated ? menu : authButtons}
+                        {auth.session.isAuthenticated ? menu : authButtons}
                     </Toolbar>
                 </AppBar>
             </div>

@@ -35,6 +35,9 @@ import DELETE_POST_FAILURE from '../constants/DELETE_POST_FAILURE';
 import GET_USER_REQUEST from '../constants/GET_USER_REQUEST';
 import GET_USER_SUCCESS from '../constants/GET_USER_SUCCESS';
 import GET_USER_FAILURE from '../constants/GET_USER_FAILURE';
+import REFRESH_SESSION_DATA_REQUEST from '../constants/REFRESH_SESSION_DATA_REQUEST';
+import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCCESS';
+import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
 
 // Containers
 import DeletePostDialog from '../containers/DeletePostDialog'
@@ -78,11 +81,15 @@ class User extends Component {
 
         this.accessToken = getLocal('access-token');
         this.refreshToken = getLocal('refresh-token');
+        this._id = getLocal('id');
     }
 
     async componentDidMount() {
         const pathname = this.props
         const id = pathname.match.params.id;
+        if(!this.props.auth.session.user.data) {
+			await this.props.request(`/api/user/${this._id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+		}
         try {
             await this.props.request(`/api/user/${id}`, 'get')(GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_FAILURE);
         } catch (err) {
@@ -199,9 +206,9 @@ class User extends Component {
     }
 
     render() {
-        const { classes, appInterface, openDrawer, openPostDialog, closeDrawer, pages } = this.props;
-        if (pages.userPage.user.loading) return <div className={classes.loader}><CircularProgress /></div>
-        if (!pages.userPage.user.loading && !pages.userPage.user.data) return null;
+        const { classes, appInterface, openDrawer, openPostDialog, closeDrawer, pages, auth } = this.props;
+        if (pages.userPage.user.loading || auth.session.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if ((!pages.userPage.user.loading && !pages.userPage.user.data) && (!auth.session.loading && !auth.session.user.data)) return null;
         return (
             <div>
                 <AppBar title={pages.userPage.user.data && pages.userPage.user.data.name} openDrawer={openDrawer} />

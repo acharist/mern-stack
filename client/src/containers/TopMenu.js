@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { styles } from '../assets/jss/styles';
 
 // Utils
-import getLocalState from '../utils/getLocalState';
+import getLocal from '../utils/getLocal';
 
 // Higher-Order Components
 import { connect } from 'react-redux';
@@ -29,21 +29,14 @@ import Settings from '@material-ui/icons/Settings';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 
 class TopMenu extends Component {
-    state = {
-        localState: getLocalState()
-    }
-
     render() {
         const { classes, children, userName, userEmail, logOut, redirectToSettings } = this.props;
-        const localState = getLocalState();
-
+        const id = getLocal('id');
         return (
             <div>
                 <Paper className={classes.topMenu}>
                     <Paper className={classNames(classes.topMenuHead, classes.flex, classes.alignItemsCenter)}>
-                        {/* Avatar component ↓↓↓ */}
-                                          {children}
-                        {/* Avatar component ↑↑↑ */}
+                        {children}
                         <div className={classes.userInfo}>
                             <Typography variant="h6" className={classes.userName}>
                                 {userName}
@@ -58,7 +51,7 @@ class TopMenu extends Component {
                             <ListItemIcon className={classes.icon}>
                                 <Settings />
                             </ListItemIcon>
-                            <ListItemText inset primary="Настройки" onClick={() => redirectToSettings(localState.auth.session.user.data._id)} />
+                            <ListItemText inset primary="Настройки" onClick={() => redirectToSettings(id)} />
                         </MenuItem>
                         <MenuItem className={classes.menuItem} onClick={logOut}>
                             <ListItemIcon className={classes.icon}>
@@ -74,8 +67,7 @@ class TopMenu extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    appInterface: state.appInterface,
-	auth: state.auth
+    appInterface: state.appInterface
 });
 
 const mapDispatchToProps = (dispatch) => ({

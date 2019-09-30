@@ -40,6 +40,9 @@ import request from '../actions/request';
 import GET_USERS_REQUEST from '../constants/GET_USERS_REQUEST';
 import GET_USERS_SUCCESS from '../constants/GET_USERS_SUCCESS';
 import GET_USERS_FAILURE from '../constants/GET_USERS_FAILURE';
+import REFRESH_SESSION_DATA_REQUEST from '../constants/REFRESH_SESSION_DATA_REQUEST';
+import REFRESH_SESSION_DATA_SUCCESS from '../constants/REFRESH_SESSION_DATA_SUCCESS';
+import REFRESH_SESSION_DATA_FAILURE from '../constants/REFRESH_SESSION_DATA_FAILURE';
 
 class Home extends Component {
 	constructor(props) {
@@ -47,11 +50,15 @@ class Home extends Component {
 		this.showUsers = this.showUsers.bind(this);
 		this.changeLocation = this.changeLocation.bind(this);
 		this.accessToken = getLocal('access-token');
-        this.refreshToken = getLocal('refresh-token');
+		this.refreshToken = getLocal('refresh-token');
+		this._id = getLocal('id');
 	}
 
 	async componentDidMount() {
 		await this.props.request('/api/user/users', 'get')(GET_USERS_REQUEST, GET_USERS_SUCCESS, GET_USERS_FAILURE);
+		if(!this.props.auth.session.user.data) {
+			await this.props.request(`/api/user/${this._id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+		}
 	}
 
 	changeLocation(event) {
@@ -110,9 +117,9 @@ class Home extends Component {
 	}
 
 	render() {
-		const { classes, appInterface, openDrawer, closeDrawer, pages } = this.props;
-		if (pages.homePage.loading) return <div className={classes.loader}><CircularProgress /></div>
-        if (!pages.homePage.loading && !pages.homePage.data) return null;
+		const { classes, appInterface, openDrawer, closeDrawer, pages, auth } = this.props;
+		if (pages.homePage.loading || auth.session.loading) return <div className={classes.loader}><CircularProgress /></div>
+        if ((!pages.homePage.loading && !pages.homePage.data) && (!auth.session.loading && !auth.session.user.data)) return null;
 		return (
 			<div className="Home">
 				<AppBar title="Главная" openDrawer={openDrawer}/>

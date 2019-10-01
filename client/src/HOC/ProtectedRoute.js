@@ -11,7 +11,6 @@ import RESET_REFRESHED from '../constants/RESET_REFRESHED';
 
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
-import getLocalState from '../utils/getLocalState';
 import getLocal from '../utils/getLocal';
 
 // Styles

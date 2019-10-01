@@ -140,7 +140,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-	request: (url, method, params, headers, callback) => {
+	request: (url, method, params, headers) => {
         return (REQEST, SUCCESS, FAILURE) => {
             return dispatch(request(url, method, params, headers)(REQEST, SUCCESS, FAILURE));
         }

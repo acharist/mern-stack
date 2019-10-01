@@ -6,7 +6,6 @@ import { styles } from '../assets/jss/styles';
 
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
-import getLocalState from '../utils/getLocalState';
 import getLocal from '../utils/getLocal';
 
 // Higher-Order Components
@@ -66,7 +65,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 class User extends Component {
     constructor(props) {
         super(props);
-        this.localState = getLocalState();
         this.state = {
             title: '',
             content: '',
@@ -106,12 +104,11 @@ class User extends Component {
     }
 
     isPageOwner() {
-        return (this.localState && this.localState.auth.session.user.data._id)
-            === this.props.pages.userPage.user.data._id ? true : false;
+        return this.props.auth.session.user.data._id === this.props.pages.userPage.user.data._id ? true : false;
     }
 
     async sendPost(title, content) {
-        const userId = this.localState.auth.session.user.data._id;
+        const userId = this.props.auth.session.user.data._id;
         const pathname = this.props;
         const id = pathname.match.params.id;
         if (isExpiredToken(this.accessToken)) {
@@ -123,7 +120,7 @@ class User extends Component {
     }
 
     async deletePost() {
-        const userId = this.localState.auth.session.user.data._id;
+        const userId = this.props.auth.session.user.data._id;
         const postId = this.props.pages.userPage.user.postId;
         const pathname = this.props;
         const id = pathname.match.params.id;
@@ -220,7 +217,7 @@ class User extends Component {
                             <Card>
                                 <CardMedia
                                     style={{ width: '100%', minWidth: '100%', height: '300px' }}
-                                    image={!!pages.userPage.user.data && pages.userPage.user.data.avatarUrl}
+                                    image={pages.userPage.user.data.avatarUrl}
                                     title="Contemplative Reptile"
                                 />
                                 <CardContent>

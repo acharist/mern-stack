@@ -6,7 +6,6 @@ import { styles } from '../assets/jss/styles';
 
 // Utils
 import isExpiredToken from '../utils/isExpiredToken';
-import getLocalState from '../utils/getLocalState';
 import getLocal from '../utils/getLocal';
 
 // Actions
@@ -51,7 +50,6 @@ import CloudUpload from '@material-ui/icons/CloudUpload';
 class Settings extends Component {
     constructor(props) {
         super(props);
-        this.localState = getLocalState();
         this.state = {
             name: this.props.auth.session.user.data.name || '', 
             email: this.props.auth.session.user.data.email || '',
@@ -90,8 +88,8 @@ class Settings extends Component {
         if (isExpiredToken(this.accessToken)) {
             await this.props.refreshTokens(this.refreshToken);
         }
-        await this.props.request(`/api/user/${this.id}/settings/avatar`, 'post', formData, { headers })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
-        await this.props.request(`/api/user/${this.id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+        await this.props.request(`/api/user/${this._id}/settings/avatar`, 'post', formData, { headers })(UPDATE_AVATAR_REQUEST, UPDATE_AVATAR_SUCCESS, UPDATE_AVATAR_FAILURE);
+        await this.props.request(`/api/user/${this._id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
     async sendInfo() {
@@ -106,8 +104,8 @@ class Settings extends Component {
         if (isExpiredToken(this.accessToken)) {
             await this.props.refreshTokens(this.refreshToken);
         }
-        await this.props.request(`/api/user/${this.id}/settings/common`, 'post', data)(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE);
-        await this.props.request(`/api/user/${this.id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
+        await this.props.request(`/api/user/${this._id}/settings/common`, 'post', data)(UPDATE_INFO_REQUEST, UPDATE_INFO_SUCCESS, UPDATE_INFO_FAILURE);
+        await this.props.request(`/api/user/${this._id}`, 'get')(REFRESH_SESSION_DATA_REQUEST, REFRESH_SESSION_DATA_SUCCESS, REFRESH_SESSION_DATA_FAILURE);
     }
 
     render() {
@@ -217,10 +215,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    request: (url, method, params, headers, callback) => {
-		return (REQEST, SUCCESS, FAILURE) => {
-			dispatch(request(url, method, params, headers, callback)(REQEST, SUCCESS, FAILURE))
-		}
+    request: (url, method, params, headers) => {
+        return (REQEST, SUCCESS, FAILURE) => {
+            return dispatch(request(url, method, params, headers)(REQEST, SUCCESS, FAILURE));
+        }
     },
     refreshTokens: (refreshToken, callback) => {
         return dispatch(refreshTokens(refreshToken, callback));

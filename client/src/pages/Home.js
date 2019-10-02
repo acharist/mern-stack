@@ -6,7 +6,6 @@ import { styles } from '../assets/jss/styles';
 
 // Utils
 import getLocal from '../utils/getLocal';
-import isExpiredToken from '../utils/isExpiredToken';
 
 // Higher-Order Components
 import { connect } from 'react-redux';

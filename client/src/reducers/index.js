@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
 
 //Reducers
 import refreshTokens from './refreshTokens';
@@ -13,8 +14,9 @@ import userData from './userData';
 import homePage from './homePage';
 import user from './user';
 
-export default combineReducers({
-    appInterface,
+const createRootReducer = (history) => combineReducers({
+  router: connectRouter(history),
+  appInterface,
     auth: combineReducers({
         signin,
         signup,
@@ -36,3 +38,5 @@ export default combineReducers({
         })
     })
 });
+
+export default createRootReducer;

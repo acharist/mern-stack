@@ -1,4 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId;
+const normalizeUrl = require('normalize-url');
 const User = require('../models/User');
 const Article = require('../models/Article');
 const createError = require('http-errors');
@@ -66,7 +67,7 @@ module.exports.getUserArticles = (req, res, next) => {
                 }
             })
     } else {
-        return next(createError(404)); //Or 400 Id is incorrect
+        return next(createError(404));
     }
 }
 
@@ -110,7 +111,7 @@ module.exports.getCurrentUserArticle = (req, res, next) => {
 module.exports.createArticle = (req, res, next) => {
     const id = req.params.id;
     if (ObjectId.isValid(id)) {
-        if (id == req.user.id) { //If it's tokens owner
+        if (id == req.user.id) { // Check tokens owner
             User.findById({ _id: id })
                 .exec((err, user) => {
                     if (err) {
@@ -225,7 +226,7 @@ module.exports.avatarUpload = (req, res, next) => {
                                     return next(createError(500));
                                 }
 
-                                user.avatarUrl = `http://localhost:5000/api/uploads/${id}.jpg`;
+                                user.avatarUrl = `${normalizeUrl(process.env.HOST)}:${process.env.PORT}/api/uploads/${id}.jpg`;
                                 user.save((err) => {
                                     if(err) {
                                         return next(createError(500));

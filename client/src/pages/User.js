@@ -212,7 +212,7 @@ class User extends Component {
                 <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer} />
                 <DeletePostDialog deletePost={this.deletePost} />
                 <div style={{ padding: 12, marginTop: 20 }}>
-                    <Grid container spacing={24} justify="center">
+                    <Grid container spacing={3} justify="center">
                         <Grid item xl={2} lg={3} md={3} sm={5} xs={12}>
                             <Card>
                                 <CardMedia

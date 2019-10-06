@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const key = require('../config/key');
+require('dotenv').config();
 
 module.exports.signIn = (req, res, next) => {
     User.findOne({ email: req.body.email })
@@ -23,14 +23,14 @@ module.exports.signIn = (req, res, next) => {
                             const accessToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
-                            }, key, {
+                            }, process.env.SECRET_KEY, {
                                 expiresIn: '30m'
                             });
                         
                             const refreshToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
-                            }, key, {
+                            }, process.env.SECRET_KEY, {
                                 expiresIn: '60d'
                             });
 

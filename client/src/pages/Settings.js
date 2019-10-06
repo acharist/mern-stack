@@ -119,7 +119,7 @@ class Settings extends Component {
                 <AppDrawer isDrawerOpen={appInterface.isDrawerOpen} closeDrawer={closeDrawer}/>
 
                 <div style={{ padding: 12, marginTop: 20 }}>
-                    <Grid container spacing={24} justify="center">
+                    <Grid container spacing={3} justify="center">
                         <Grid item xs={10}>
                             <Paper className={classes.innerPadding}>
                                 <Typography variant="subtitle1" className={classes.settingsTitle}>

@@ -15,6 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { push } from 'connected-react-router';
 import logOut from '../actions/logOut';
 import redirectToSettings from '../actions/redirectToSettings';
+import closeTopMenu from '../actions/closeTopMenu';
 
 // Components
 import Paper from '@material-ui/core/Paper';
@@ -72,16 +73,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     redirectToSettings: (id) => {
-        if(id.length) {
-            dispatch(redirectToSettings(id));
-        } else {
-            dispatch(push('/signin'));
-        }
-    },
-    redirectToSignin: () => {
-        dispatch(push('/signin'));
+        dispatch(closeTopMenu());
+        dispatch(redirectToSettings(id));
     },
     logOut: () => {
+        dispatch(closeTopMenu());
         dispatch(logOut());
     }
 });

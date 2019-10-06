@@ -100,7 +100,7 @@ export const styles = theme => ({
     },
     authOverlay: {
         ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(1) * 2,
         paddingBottom: 30,
         zIndex: 2,
         position: 'fixed',
@@ -109,13 +109,13 @@ export const styles = theme => ({
         transform: 'translate(-50%, -50%)'
     },
     textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
+        marginRight: theme.spacing(1),
         width: 260,
         marginTop: 10
     },
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(1),
     },
     form: {
         display: 'flex',
@@ -205,8 +205,8 @@ export const styles = theme => ({
     },
     innerPadding: {
         ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 2,
-        paddingBottom: theme.spacing.unit * 2,
+        paddingTop: theme.spacing(1) * 2,
+        paddingBottom: theme.spacing(1) * 2,
     },
     settingsTitle: {
         marginBottom: '20px'

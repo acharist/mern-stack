@@ -3,7 +3,7 @@ const User = require('../models/User');
 const Article = require('../models/Article');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const key = require('../config/key');
+require('dotenv').config();
 
 module.exports.signUp = (req, res, next) => {
     const user = new User({
@@ -63,14 +63,14 @@ module.exports.signUp = (req, res, next) => {
         const accessToken = jwt.sign({
             email: user.email,
             id: user._id
-        }, key, {
+        }, process.env.SECRET_KEY, {
             expiresIn: '30m'
         });
     
         const refreshToken = jwt.sign({
             email: user.email,
             id: user._id
-        }, key, {
+        }, process.env.SECRET_KEY, {
             expiresIn: '60d'
         });
 

@@ -23,12 +23,12 @@ import NotFound from './pages/NotFound';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 
-import ProtectedRoute from './hoc/ProtectedRoute';
+import ProtectRoute from './hoc/ProtectRoute';
 
 // Decorated routes
-const ProtectedHome = ProtectedRoute(Home);
-const ProtectedUser = ProtectedRoute(User);
-const ProtectedSettings = ProtectedRoute(Settings);
+const ProtectedHome = ProtectRoute(Home);
+const ProtectedUser = ProtectRoute(User);
+const ProtectedSettings = ProtectRoute(Settings);
 
 const theme = createMuiTheme({
     palette: {

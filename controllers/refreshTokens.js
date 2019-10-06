@@ -1,8 +1,8 @@
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
-const key = require('../config/key');
 const ObjectId = require('mongoose').Types.ObjectId;
 const User = require('../models/User');
+require('dotenv').config();
 
 module.exports.refreshTokens = (req, res, next) => {
     const tokenHeader = req.headers['authorization'];
@@ -10,7 +10,7 @@ module.exports.refreshTokens = (req, res, next) => {
     if(tokenHeader) {
         const pureToken = tokenHeader.split(' ')[1];
         try {
-            const decodedToken = jwt.verify(pureToken, key);
+            const decodedToken = jwt.verify(pureToken, process.env.SECRET_KEY);
             if(decodedToken.exp > currentTime) {
                 if(ObjectId.isValid(decodedToken.id)) {
                     //there is  error
@@ -23,13 +23,13 @@ module.exports.refreshTokens = (req, res, next) => {
                             const newAccessToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
-                            }, key, {
+                            }, process.env.SECRET_KEY, {
                                 expiresIn: '30m'
                             });
                             const newRefreshToken = jwt.sign({
                                 email: user.email,
                                 id: user._id
-                            }, key, {
+                            }, process.env.SECRET_KEY, {
                                 expiresIn: '60d'
                             });
 

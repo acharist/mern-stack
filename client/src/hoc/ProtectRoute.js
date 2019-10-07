@@ -29,9 +29,9 @@ export default function (WrappedComponent) {
             super(props);
             this._check = this._check.bind(this);
             this._logOut = this._logOut.bind(this);
-            this._checkForLocalState = this._checkForLocalState.bind(this);
-            this._getDecodedLocalTokens = this._getDecodedLocalTokens.bind(this);
-            this._checkForTokensRefresh = this._checkForTokensRefresh.bind(this);
+            this._checkId = this._checkId.bind(this);
+            this._checkLocalTokens = this._checkLocalTokens.bind(this);
+            this._checkTokensRefresh = this._checkTokensRefresh.bind(this);
         }
 
         componentDidMount() {
@@ -45,8 +45,8 @@ export default function (WrappedComponent) {
             }
         }
 
-        _checkForTokensRefresh() {
-            if (this._check()) { // If local state and tokens are whole
+        _checkTokensRefresh() {
+            if (this._check()) { // If id and tokens are whole
                 const accessToken = getLocal('access-token');
                 const refreshToken = getLocal('refresh-token');  
                 if (isExpiredToken(accessToken)) {
@@ -64,39 +64,36 @@ export default function (WrappedComponent) {
         }
 
         _refreshTokens() {
-            if (this._checkForTokensRefresh()) { // Validation for sending a request for updating tokens
+            if (this._checkTokensRefresh()) { // Validation for sending a request for updating tokens
                 // Need to use api request for getting new tokes
                 const refreshToken = getLocal('refresh-token');
                 this.props.refreshTokens(refreshToken);
             }
         }
 
-        _checkForLocalState() {
-            try {
-                return !!JSON.parse(getLocal('state'));
-            } catch(err) {
-                return false;
-            }
-        }
-
-        _getDecodedLocalTokens() { // Check if tokens are consists in local storage
+        _checkLocalTokens() { // Check if tokens are consists in local storage
             try {
                 const accessToken = getLocal('access-token');
                 const refreshToken = getLocal('refresh-token');
                 const pureAccessToken = accessToken.split(' ')[1];
                 const pureRefreshToken = refreshToken.split(' ')[1];
                 
-                const decodedAccessToken = jwtDecode(pureAccessToken);
-                const decodedRefreshToken = jwtDecode(pureRefreshToken);
+                jwtDecode(pureAccessToken);
+                jwtDecode(pureRefreshToken);
 
-                return { decodedAccessToken, decodedRefreshToken }
+                return true;
             } catch (err) {
                 return false;
             }
         }
 
-        _check() { // Check if tokens and copy of local state are whole
-            return this._checkForLocalState() && this._getDecodedLocalTokens() ? true : false;
+        _checkId() {
+            return getLocal('id') ? true : false;
+        }
+
+        _check() { // Check if tokens and id are whole
+            console.log(this._checkId())
+            return this._checkId() && this._checkLocalTokens();
         }
 
         _logOut() {
@@ -109,7 +106,7 @@ export default function (WrappedComponent) {
         render() {
             const { auth, classes } = this.props;
             if(this._check()) {
-                if(this._checkForTokensRefresh()) {
+                if(this._checkTokensRefresh()) {
                     if(auth.refreshTokens.loading) {
                         return <div className={classes.loader}>
                                     <CircularProgress/>

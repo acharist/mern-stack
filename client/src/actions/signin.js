@@ -2,8 +2,6 @@ import SIGNIN_USER_REQUEST from '../constants/SIGNIN_USER_REQUEST';
 import SIGNIN_USER_SUCCESS from '../constants/SIGNIN_USER_SUCCESS';
 import SIGNIN_USER_FAILURE from '../constants/SIGNIN_USER_FAILURE';
 
-import { store } from '../store/store';
-
 import axios from 'axios';
 import setLocal from '../utils/setLocal';
 import { push } from 'connected-react-router';
@@ -25,7 +23,6 @@ export default (email, password) => {
             dispach({ type: SIGNIN_USER_SUCCESS });
             dispach(setUserData(data.data.data));
             setLocal('id', data.data.data._id);
-            setLocal('state', JSON.stringify(store.getState()), true);
             dispach(push('/'));
         })
         .catch(err => { 

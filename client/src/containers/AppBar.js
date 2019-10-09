@@ -8,7 +8,6 @@ import { styles } from '../assets/jss/styles';
 import getLocal from '../utils/getLocal';
 
 // Actions
-import refreshTokens from '../actions/refreshTokens';
 import closeTopMenu from '../actions/closeTopMenu';
 import openTopMenu from '../actions/openTopMenu';
 import { push } from 'connected-react-router';
@@ -46,7 +45,7 @@ class ButtonAppBar extends Component {
         this.state = {
             anchorEl: null
         }
-		this.changeLocation = this.changeLocation.bind(this);
+        this.changeLocation = this.changeLocation.bind(this);
     }
 
     async changeLocation() {
@@ -58,9 +57,9 @@ class ButtonAppBar extends Component {
 
     render() {
         const { classes, openDrawer, auth,
-            openTopMenu, closeTopMenu, title, 
+            openTopMenu, closeTopMenu, title,
             redirectToSignin, redirectToSignup,
-             appInterface } = this.props;
+            appInterface } = this.props;
 
         const authButtons = (
             <div>
@@ -71,19 +70,19 @@ class ButtonAppBar extends Component {
         const menu = (
             <div>
                 <IconButton onClick={openTopMenu}
-                  color="inherit" aria-haspopup="true"
-                  aria-owns={appInterface.isTopMenuOpen ? 'menu-appbar' : undefined}
-                  buttonRef={node => {
-                    this.anchorEl = node;
-                  }}>
-                <Avatar className={classes.avatar} alt="User" src={auth.session.user.data.avatarUrl} />
+                    color="inherit" aria-haspopup="true"
+                    aria-owns={appInterface.isTopMenuOpen ? 'menu-appbar' : undefined}
+                    buttonRef={node => {
+                        this.anchorEl = node;
+                    }}>
+                    <Avatar className={classes.avatar} alt="User" src={auth.session.user.data.avatarUrl} />
                 </IconButton>
                 <Popper className={classes.popper} open={appInterface.isTopMenuOpen} anchorEl={this.anchorEl} placement="bottom">
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps}>
                             <ClickAwayListener onClickAway={closeTopMenu}>
                                 <TopMenu userName={auth.session.user.data.name} userEmail={auth.session.user.data.email}>
-                                    <Avatar className={classes.cursorPointer} alt="User" src={auth.session.user.data.avatarUrl} onClick={this.changeLocation}/>
+                                    <Avatar className={classes.cursorPointer} alt="User" src={auth.session.user.data.avatarUrl} onClick={this.changeLocation} />
                                 </TopMenu>
                             </ClickAwayListener>
                         </Fade>
@@ -116,7 +115,7 @@ ButtonAppBar.propTypes = {
 
 const mapStateToProps = (state) => ({
     appInterface: state.appInterface,
-	auth: state.auth
+    auth: state.auth
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -124,9 +123,6 @@ const mapDispatchToProps = (dispatch) => ({
         return (REQEST, SUCCESS, FAILURE) => {
             return dispatch(request(url, method, params, headers)(REQEST, SUCCESS, FAILURE));
         }
-    },
-    refreshTokens: (refreshToken, callback) => {
-        return dispatch(refreshTokens(refreshToken, callback));
     },
     openTopMenu: () => {
         dispatch(openTopMenu());

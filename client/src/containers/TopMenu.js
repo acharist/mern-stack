@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 
 // Actions
-import { push } from 'connected-react-router';
 import logOut from '../actions/logOut';
 import redirectToSettings from '../actions/redirectToSettings';
 import closeTopMenu from '../actions/closeTopMenu';

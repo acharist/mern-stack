@@ -6,9 +6,9 @@
   "author": "acharist",
   "license": "MIT",
   "scripts": {
-    "client-install": "npm install --prefix client",
-    "server": "nodemon server.js",
-    "client": "npm start --prefix client",
+    "client-install": "cd ../ && npm install --prefix client",
+    "server": "nodemon ./server/server.js",
+    "client": "cd ../ && npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "dependencies": {

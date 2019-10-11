@@ -3,22 +3,19 @@
 This full stack application is build only for demonstration purposes.
 Application based on MERN stack (Mongo Express React Node).
 
-
-At the root of the project are two directories “client” and “server”.
+There are two directories at the root of the project: “client” and “server”.
 
 Going to the “server”, do:
 ```
 npm install
 ```
 
-And then:
+After that, go to the "client" directory:
 ```
-npm client-install
+npm install
 ```
 
-
-After cloning the repository and installing all the packages, it is necessary in the directory
-"server" add .env file.
+After cloning the repository and installing all its packages, you need to add the .env file in the "server" directory.
 Next, make the following changes there:
 ```
 SECRET_KEY = secret_key
@@ -29,7 +26,14 @@ DB_PORT = db_host_port
 DB_COLLECTION_NAME = name_of_db_collection
 ```
 
-Now you can start the dev server.
+Now you can start client and server independently.
+
+In server directory:
 ```
-npm dev
+npm run server
+```
+
+In client directory:
+```
+npm run client
 ```
